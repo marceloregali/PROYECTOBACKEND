@@ -1,43 +1,34 @@
 import express from "express";
+import productsRouter from "./routes/products.js";
+import cartsRouter from "./routes/carts.js";
+import usersRouter from "./routes/users.js";
 
 const app = express();
 
+// Middleware para parsear JSON
+app.use(express.json());
+
 app.get("/", (req, res) => {
-  res.send("hola soy un servidor");
+  res.send("Hola, soy un servidor");
 });
 
 app.get("/bienvenida", (req, res) => {
   res.send(`<h1 style="color:blue";> Bienvenido a mi primer servidor express`);
 });
+
 app.get("/usuario", (req, res) => {
   const usuario = {
-    nombre: "pedro",
+    nombre: "Pedro",
     edad: 30,
-    apellido: "perez",
+    apellido: "Perez",
   };
   res.send(usuario);
 });
 
-const usuarios = [
-  { id: 1, nombre: "Diego", apellido: "Perez", edad: 40 },
-  { id: 2, nombre: "Dardo", apellido: "Milanesio", edad: 23 },
-  { id: 3, nombre: "Carolina", apellido: "Tomatis", edad: 35 },
-];
-
-app.get("/usuarios", (req, res) => {
-  res.send(usuarios);
-});
-
-app.get("/usuarios/:userID", (req, res) => {
-  const idUsuario = +req.params.userId;
-  const usuario = usuarios.find((usuario) => usuario.id === idUsuario);
-  if (!usuario) {
-    res.send(`no existe el usuario con el id ${idUsuario}`);
-    return;
-  }
-  res.send(usuario);
-});
+app.use("/api/products", productsRouter);
+app.use("/api/carts", cartsRouter);
+app.use("/users", usersRouter);
 
 app.listen(8080, () => {
-  console.log("servidor levantado en puerto 8080");
+  console.log("Servidor levantado en puerto 8080");
 });
