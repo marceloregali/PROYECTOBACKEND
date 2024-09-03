@@ -5,7 +5,6 @@ import usersRouter from "./routes/users.js";
 
 const app = express();
 
-// Middleware para parsear JSON
 app.use(express.json());
 
 app.get("/", (req, res) => {

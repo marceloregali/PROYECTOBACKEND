@@ -1,7 +1,6 @@
 import express from "express";
 const router = express.Router();
 
-// Datos simulados de carritos
 const carritos = [
   { id: 1, productos: [] },
   { id: 2, productos: [] },
@@ -12,7 +11,7 @@ router.get("/", (req, res) => {
   res.json(carritos);
 });
 
-// obtener un carrito por ID
+// obtiene un carrito por ID
 router.get("/:id", (req, res) => {
   const id = +req.params.id;
   const carrito = carritos.find((c) => c.id === id);
@@ -24,7 +23,7 @@ router.get("/:id", (req, res) => {
   res.json(carrito);
 });
 
-//agregar un producto
+//agrega un producto
 router.post("/:id/productos", (req, res) => {
   const id = +req.params.id;
   const carrito = carritos.find((c) => c.id === id);
@@ -44,7 +43,7 @@ router.post("/:id/productos", (req, res) => {
   res.status(201).json({ message: "Producto agregado al carrito", carrito });
 });
 
-// eliminar un producto
+// elimina un producto
 router.delete("/:id/productos/:pid", (req, res) => {
   const id = +req.params.id;
   const pid = +req.params.pid;
