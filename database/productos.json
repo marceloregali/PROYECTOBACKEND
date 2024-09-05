@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "title": "Jeans",
+    "description": "Ropa casual",
+    "code": 40,
+    "price": "75000",
+    "status": true,
+    "stock": 23,
+    "category": "individual"
+  },
+  {
+    "id": 2,
+    "title": "Remeras",
+    "description": "Ropa casual",
+    "code": 24,
+    "price": "12500",
+    "status": true,
+    "stock": 23,
+    "category": "individual"
+  },
+  {
+    "id": 3,
+    "title": "Zapatillas",
+    "description": "Calzado deportivo",
+    "code": 30,
+    "price": "123500",
+    "status": true,
+    "stock": 23,
+    "category": "individual"
+  },
+  {
+    "id": 4,
+    "title": "Zapatos",
+    "description": "Calzado deportivo",
+    "code": 31,
+    "price": "$80000",
+    "status": true,
+    "stock": "15",
+    "category": "individual"
+  }
+]
