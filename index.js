@@ -1,11 +1,12 @@
 import express from "express";
-import helmet from "helmet"; // políticas de seguridad
+import helmet from "helmet";
 import productsRouter from "./routes/products.js";
 import cartsRouter from "./routes/carts.js";
 import usersRouter from "./routes/users.js";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import expressHandlebars from "express-handlebars";
+import WebSocket from "ws"; // Importar ws
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -62,6 +63,29 @@ app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/users", usersRouter);
 
-app.listen(8080, () => {
+// Configuración del servidor WebSocket
+const wss = new WebSocket.Server({ noServer: true });
+
+wss.on("connection", (ws) => {
+  console.log("Cliente conectado");
+
+  ws.on("message", (message) => {
+    console.log(`Mensaje recibido: ${message}`);
+    ws.send(`Echo: ${message}`);
+  });
+
+  ws.on("close", () => {
+    console.log("Cliente desconectado");
+  });
+});
+
+// Adaptar el servidor para manejar WebSocket
+app.server = app.listen(8080, () => {
   console.log("Servidor levantado en puerto 8080");
+});
+
+app.server.on("upgrade", (request, socket, head) => {
+  wss.handleUpgrade(request, socket, head, (ws) => {
+    wss.emit("connection", ws, request);
+  });
 });
