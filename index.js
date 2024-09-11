@@ -5,27 +5,27 @@ import cartsRouter from "./routes/carts.js";
 import usersRouter from "./routes/users.js";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
-import expressHandlebars from "express-handlebars";
-import WebSocket from "ws"; // Importar ws
+import Handlebars from "express-handlebars";
+import http from "http";
+import { Server as SocketIOServer } from "socket.io";
+import viewsRoute from "./routes/views.js"; // Asegúrate de que esta ruta sea correcta
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const app = express();
+const server = http.createServer(app);
+const io = new SocketIOServer(server);
 
-// Configuración de Handlebars
-const hbs = expressHandlebars.create({
-  layoutsDir: __dirname + "/layouts",
-  defaultLayout: "main",
-  extname: ".handlebars",
-});
-
-app.engine("handlebars", hbs.engine);
+app.engine("handlebars", Handlebars.engine());
+app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
-app.set("views", __dirname + "/layouts");
 
 // Middleware para manejar JSON
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use("/", viewsRoute);
 
 // Middleware de seguridad con helmet
 app.use(helmet());
@@ -63,29 +63,32 @@ app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/users", usersRouter);
 
-// Configuración del servidor WebSocket
-const wss = new WebSocket.Server({ noServer: true });
+// Configuración de Socket.IO
+io.on("connection", (socket) => {
+  console.log("Nuevo cliente conectado");
 
-wss.on("connection", (ws) => {
-  console.log("Cliente conectado");
-
-  ws.on("message", (message) => {
-    console.log(`Mensaje recibido: ${message}`);
-    ws.send(`Echo: ${message}`);
+  socket.on("message", (data) => {
+    console.log(data);
   });
 
-  ws.on("close", () => {
-    console.log("Cliente desconectado");
+  socket.on("message2", (data) => {
+    console.log("Hola nuevamente" + data);
   });
 });
 
-// Adaptar el servidor para manejar WebSocket
-app.server = app.listen(8080, () => {
-  console.log("Servidor levantado en puerto 8080");
-});
+/*SocketServer.on("connection", (socket) => {
+  console.log("nuevo cliente");
 
-app.server.on("upgrade", (request, socket, head) => {
-  wss.handleUpgrade(request, socket, head, (ws) => {
-    wss.emit("connection", ws, request);
+  socket.on("messaje", (data) => {
+    console.log(data);
   });
+
+  socket.emit("evento");
+
+  socket.broadcast.emit("evento para todos");
+});*/
+
+// Iniciar el servidor(bien )
+const httpServer = app.listen(8080, () => {
+  console.log("Server ON");
 });
