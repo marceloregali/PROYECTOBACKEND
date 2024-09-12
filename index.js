@@ -8,7 +8,7 @@ import { dirname } from "path";
 import Handlebars from "express-handlebars";
 import http from "http";
 import { Server as SocketIOServer } from "socket.io";
-import viewsRoute from "./routes/views.js"; // Asegúrate de que esta ruta sea correcta
+import viewsRoute from "./routes/views.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -67,28 +67,27 @@ app.use("/api/users", usersRouter);
 io.on("connection", (socket) => {
   console.log("Nuevo cliente conectado");
 
-  socket.on("message", (data) => {
-    console.log(data);
+  //  lista de productos a todos los clientes conectados
+  const sendProductList = async () => {
+    const response = await fetch("http://localhost:8080/api/products");
+    const products = await response.json();
+    io.emit("updateProducts", products);
+  };
+
+  // Enviar la lista de productos cuando un cliente se conecta
+  sendProductList();
+
+  // Manejar eventos de actualización de productos
+  socket.on("productUpdated", async () => {
+    sendProductList();
   });
 
-  socket.on("message2", (data) => {
-    console.log("Hola nuevamente" + data);
+  socket.on("disconnect", () => {
+    console.log("Cliente desconectado");
   });
 });
 
-/*SocketServer.on("connection", (socket) => {
-  console.log("nuevo cliente");
-
-  socket.on("messaje", (data) => {
-    console.log(data);
-  });
-
-  socket.emit("evento");
-
-  socket.broadcast.emit("evento para todos");
-});*/
-
-// Iniciar el servidor(bien )
-const httpServer = app.listen(8080, () => {
+// Iniciar el servidor
+const httpServer = server.listen(8080, () => {
   console.log("Server ON");
 });
