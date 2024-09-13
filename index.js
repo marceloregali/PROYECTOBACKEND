@@ -21,13 +21,13 @@ app.engine("handlebars", Handlebars.engine());
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
 
-// Middleware para manejar JSON
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use(express.static(__dirname + "/public")); // Servir archivos estáticos
+
 app.use("/", viewsRoute);
 
-// Middleware de seguridad con helmet
 app.use(helmet());
 app.use(
   helmet.contentSecurityPolicy({
@@ -63,21 +63,17 @@ app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/users", usersRouter);
 
-// Configuración de Socket.IO
 io.on("connection", (socket) => {
   console.log("Nuevo cliente conectado");
 
-  //  lista de productos a todos los clientes conectados
   const sendProductList = async () => {
     const response = await fetch("http://localhost:8080/api/products");
     const products = await response.json();
     io.emit("updateProducts", products);
   };
 
-  // Enviar la lista de productos cuando un cliente se conecta
   sendProductList();
 
-  // Manejar eventos de actualización de productos
   socket.on("productUpdated", async () => {
     sendProductList();
   });
@@ -87,7 +83,6 @@ io.on("connection", (socket) => {
   });
 });
 
-// Iniciar el servidor
 const httpServer = server.listen(8080, () => {
   console.log("Server ON");
 });

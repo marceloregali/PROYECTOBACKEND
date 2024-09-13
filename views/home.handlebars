@@ -1,16 +1,26 @@
-<div>
-  <h1>Lista de productos</h1>
-  <h2>1,"title":"Jeans","description":"Ropa
-    casual","code":40,"price":"75000","status":true,"stock":23,"category":"individual"</h2>,
-  <h2>2,"title":"Remeras","description":"Ropa
-    casual","code":24,"price":"12500","status":true,"stock":23,"category":"individual"</h2>,
-  <h2>3,"title":"Zapatillas","description":"Calzado
-    deportivo","code":30,"price":"123500","status":true,"stock":23,"category":"individual"</h2>,
-  <h2>4,"title":"Zapatos","description":"Calzado
-    deportivo","code":31,"price":"$80000","status":true,"stock":"15","category":"individual"</h2>
-  <ul>
-    {{#each productos}}
-      <li>{{this.name}} - Precio: {{this.price}}</li>
-    {{/each}}
-  </ul>
-</div>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lista de Productos</title>
+  </head>
+  <body>
+    <div>
+      <h1>Lista de productos</h1>
+      <!-- Esto es un ejemplo estático; puedes eliminarlo si no es necesario -->
+      <h2>1. Jeans - Ropa casual - Código: 40 - Precio: $75,000 - Stock: 23</h2>
+      <h2>2. Remeras - Ropa casual - Código: 24 - Precio: $12,500 - Stock: 23</h2>
+      <h2>3. Zapatillas - Calzado deportivo - Código: 30 - Precio: $123,500 -
+        Stock: 23</h2>
+      <h2>4. Zapatos - Calzado deportivo - Código: 31 - Precio: $80,000 - Stock:
+        15</h2>
+
+      <ul>
+        <!-- Recorre los productos y muestra cada uno en una lista -->
+        {{#each productos}}
+          <li>{{this.title}} - Precio: {{this.price}}</li>
+        {{/each}}
+      </ul>
+    </div>
+  </body>
+</html>
