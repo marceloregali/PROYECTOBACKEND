@@ -7,7 +7,7 @@
   <body>
     <div>
       <h1>Lista de productos</h1>
-      <!-- Esto es un ejemplo estático; puedes eliminarlo si no es necesario -->
+
       <h2>1. Jeans - Ropa casual - Código: 40 - Precio: $75,000 - Stock: 23</h2>
       <h2>2. Remeras - Ropa casual - Código: 24 - Precio: $12,500 - Stock: 23</h2>
       <h2>3. Zapatillas - Calzado deportivo - Código: 30 - Precio: $123,500 -
@@ -16,7 +16,7 @@
         15</h2>
 
       <ul>
-        <!-- Recorre los productos y muestra cada uno en una lista -->
+
         {{#each productos}}
           <li>{{this.title}} - Precio: {{this.price}}</li>
         {{/each}}
