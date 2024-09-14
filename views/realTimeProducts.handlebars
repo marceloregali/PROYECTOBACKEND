@@ -6,11 +6,30 @@
   </head>
   <body>
     <h1>Lista de Productos en Tiempo Real</h1>
+
+    <h2>1. Jeans - Ropa casual - Código: 40 - Precio: $75,000 - Stock: 23</h2>
+    <h2>2. Remeras - Ropa casual - Código: 24 - Precio: $12,500 - Stock: 23</h2>
+    <h2>3. Zapatillas - Calzado deportivo - Código: 30 - Precio: $123,500 -
+      Stock: 23</h2>
+    <h2>4. Zapatos - Calzado deportivo - Código: 31 - Precio: $80,000 - Stock:
+      15</h2>
     <ul id="products-list">
-      <!-- La lista de productos  -->
+
     </ul>
+
+    <!-- Formulario de los  productos -->
+    <form id="productForm">
+      <input
+        type="text"
+        id="title"
+        placeholder="Título del producto"
+        required
+      />
+      <input type="number" id="price" placeholder="Precio" required />
+      <button type="submit">Agregar Producto</button>
+    </form>
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/realtime.products.js"></script>
-
   </body>
 </html>

@@ -3,13 +3,13 @@ import fs from "fs/promises";
 const router = express.Router();
 const filePath = "./database/productos.json";
 
-// leer los productos
+// Leer los productos
 const getProductos = async () => {
   const data = await fs.readFile(filePath, "utf8");
   return JSON.parse(data);
 };
 
-//  guardar los productos
+// Guardar los productos
 const saveProductos = async (productos) => {
   await fs.writeFile(filePath, JSON.stringify(productos, null, 2));
 };
@@ -46,12 +46,16 @@ router.post("/", async (req, res) => {
   try {
     const productos = await getProductos();
     const nuevoProducto = req.body;
-    if (!nuevoProducto.id || !nuevoProducto.title || !nuevoProducto.price) {
+    // Generar un nuevo ID único
+    const nuevoId =
+      productos.length > 0 ? Math.max(productos.map((p) => p.id)) + 1 : 1;
+    if (!nuevoProducto.title || !nuevoProducto.price) {
       return res
         .status(400)
         .json({ message: "Datos del producto incompletos" });
     }
 
+    nuevoProducto.id = nuevoId;
     productos.push(nuevoProducto);
     await saveProductos(productos);
     res.status(201).json({ message: "Producto agregado", nuevoProducto });
