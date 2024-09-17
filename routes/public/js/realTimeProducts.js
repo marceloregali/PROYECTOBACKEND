@@ -1,6 +1,6 @@
 const socket = io();
 
-//  actualizar la lista de productos
+//  actualizo la lista de los  productos
 socket.on("updateProducts", (products) => {
   const productsList = document.getElementById("products-list");
   productsList.innerHTML = "";
@@ -12,7 +12,7 @@ socket.on("updateProducts", (products) => {
   });
 });
 
-//  formulario de productos
+//  formulario de los productos
 const productForm = document.getElementById("add-product-form");
 productForm.addEventListener("submit", (event) => {
   event.preventDefault();

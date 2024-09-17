@@ -4,7 +4,7 @@ import fs from "fs/promises";
 const router = express.Router();
 const filePath = "./database/carritos.json";
 
-//  leer los carritos
+//  leo los carritos
 const getCarritos = async () => {
   try {
     const data = await fs.readFile(filePath, "utf8");
@@ -15,7 +15,7 @@ const getCarritos = async () => {
   }
 };
 
-//  guardar los carritos
+//  guardo los carritos
 const saveCarritos = async (carritos) => {
   try {
     await fs.writeFile(filePath, JSON.stringify(carritos, null, 2));
@@ -25,7 +25,7 @@ const saveCarritos = async (carritos) => {
   }
 };
 
-//  crear un nuevo carrito
+//  creo un nuevo carrito de compras
 router.post("/", async (req, res) => {
   try {
     const carritos = await getCarritos();
@@ -43,7 +43,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// agregar un producto a un carrito
+// agrego un producto a mi carrito
 router.post("/:cid/product/:pid", async (req, res) => {
   const { cid, pid } = req.params;
   const { quantity } = req.body;
@@ -75,7 +75,7 @@ router.post("/:cid/product/:pid", async (req, res) => {
   }
 });
 
-//  eliminar un producto de un carrito
+//  elimino un producto de mi carrito
 router.delete("/:cid/product/:pid", async (req, res) => {
   const { cid, pid } = req.params;
 
@@ -98,7 +98,7 @@ router.delete("/:cid/product/:pid", async (req, res) => {
   }
 });
 
-// obtener los productos de un carrito
+// obtengo los productos de mi carrito de compras
 router.get("/:cid", async (req, res) => {
   const { cid } = req.params;
 

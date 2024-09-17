@@ -3,18 +3,18 @@ import fs from "fs/promises";
 const router = express.Router();
 const filePath = "./database/productos.json";
 
-// Leer los productos
+//  Los productos
 const getProductos = async () => {
   const data = await fs.readFile(filePath, "utf8");
   return JSON.parse(data);
 };
 
-// Guardar los productos
+// Guardo los productos
 const saveProductos = async (productos) => {
   await fs.writeFile(filePath, JSON.stringify(productos, null, 2));
 };
 
-// Obtener productos
+// Obtengo productos
 router.get("/", async (req, res) => {
   try {
     const productos = await getProductos();
@@ -24,7 +24,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Obtener un producto por ID
+// Obtengo  un producto por ID
 router.get("/:id", async (req, res) => {
   try {
     const productos = await getProductos();
@@ -41,12 +41,12 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// Agregar un nuevo producto
+// Agrego un nuevo producto
 router.post("/", async (req, res) => {
   try {
     const productos = await getProductos();
     const nuevoProducto = req.body;
-    // Generar un nuevo ID único
+    // Genero un nuevo ID (único)
     const nuevoId =
       productos.length > 0 ? Math.max(productos.map((p) => p.id)) + 1 : 1;
     if (!nuevoProducto.title || !nuevoProducto.price) {
@@ -64,7 +64,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Eliminar un producto
+// Elimino un producto
 router.delete("/:id", async (req, res) => {
   try {
     const productos = await getProductos();

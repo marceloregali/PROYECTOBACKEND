@@ -3,13 +3,13 @@ import fs from "fs/promises";
 const router = express.Router();
 const filePath = "./database/usuarios.json";
 
-// leer los usuarios
+// leo los usuarios
 const getUsuarios = async () => {
   const data = await fs.readFile(filePath, "utf8");
   return JSON.parse(data);
 };
 
-// Obtener usuarios
+// Obtengo todos los  usuarios
 router.get("/", async (req, res) => {
   try {
     const usuarios = await getUsuarios();
@@ -19,7 +19,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-//  usuario por ID
+//  obtengo un usuario por ID
 router.get("/:userId", async (req, res) => {
   try {
     const usuarios = await getUsuarios();
