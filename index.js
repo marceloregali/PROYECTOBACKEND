@@ -1,5 +1,6 @@
 import express from "express";
 import helmet from "helmet";
+import mongoose from "mongoose"; // Importar mongoose
 import productsRouter from "./routes/products.js";
 import cartsRouter from "./routes/carts.js";
 import usersRouter from "./routes/users.js";
@@ -13,21 +14,31 @@ import viewsRoute from "./routes/views.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+// Conectar a MongoDB
+mongoose
+  .connect(
+    "mongodb+srv://marceloivanregali:8924578mro@cluster0.khst2.mongodb.net/project0",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  )
+  .then(() => console.log("Conectado a MongoDB"))
+  .catch((err) => console.error("Error de conexión a MongoDB:", err));
+
 const app = express();
 const server = http.createServer(app);
 const io = new SocketIOServer(server);
 
+// Configuración de Handlebars
 app.engine("handlebars", Handlebars.engine());
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
 
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 app.use(express.static(__dirname + "/public")); // Servir archivos estáticos
-
-app.use("/", viewsRoute);
-
 app.use(helmet());
 app.use(
   helmet.contentSecurityPolicy({
@@ -40,13 +51,15 @@ app.use(
   })
 );
 
+// Rutas
+app.use("/", viewsRoute); // Rutas de vistas
 app.get("/", (req, res) => {
   res.send("Hola, soy un servidor");
 });
 
 app.get("/bienvenida", (req, res) => {
   res.send(
-    `<h1 style="color:blue";> Bienvenido a mi primer servidor express</h1>`
+    `<h1 style="color:blue;"> Bienvenido a mi primer servidor express</h1>`
   );
 });
 
@@ -59,17 +72,23 @@ app.get("/usuario", (req, res) => {
   res.send(usuario);
 });
 
+// Rutas API
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/users", usersRouter);
 
+// Configuración de WebSocket
 io.on("connection", (socket) => {
   console.log("Nuevo cliente conectado");
 
   const sendProductList = async () => {
-    const response = await fetch("http://localhost:8080/api/products");
-    const products = await response.json();
-    io.emit("updateProducts", products);
+    try {
+      const response = await fetch("http://localhost:8080/api/products");
+      const products = await response.json();
+      io.emit("updateProducts", products);
+    } catch (error) {
+      console.error("Error al obtener la lista de productos:", error);
+    }
   };
 
   sendProductList();
@@ -83,6 +102,7 @@ io.on("connection", (socket) => {
   });
 });
 
+// Iniciar el servidor
 const httpServer = server.listen(8080, () => {
-  console.log("Server ON");
+  console.log("Server ON en http://localhost:8080");
 });

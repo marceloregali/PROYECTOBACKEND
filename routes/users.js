@@ -1,30 +1,23 @@
 import express from "express";
-import fs from "fs/promises";
+import User from "../models/User.js"; // Asegúrate de que esta ruta sea correcta
 const router = express.Router();
-const filePath = "./database/usuarios.json";
 
-// leo los usuarios
-const getUsuarios = async () => {
-  const data = await fs.readFile(filePath, "utf8");
-  return JSON.parse(data);
-};
-
-// Obtengo todos los  usuarios
+// Obtengo todos los usuarios
 router.get("/", async (req, res) => {
   try {
-    const usuarios = await getUsuarios();
+    const usuarios = await User.find(); // Obtener todos los usuarios de la base de datos
     res.json(usuarios);
   } catch (err) {
+    console.error(err); // Mostrar el error en la consola
     res.status(500).json({ message: "Error al leer los usuarios" });
   }
 });
 
-//  obtengo un usuario por ID
+// Obtengo un usuario por ID
 router.get("/:userId", async (req, res) => {
   try {
-    const usuarios = await getUsuarios();
-    const idUsuario = +req.params.userId;
-    const usuario = usuarios.find((usuario) => usuario.id === idUsuario);
+    const idUsuario = req.params.userId;
+    const usuario = await User.findById(idUsuario); // Buscar el usuario por ID en la base de datos
     if (!usuario) {
       return res
         .status(404)
@@ -32,6 +25,7 @@ router.get("/:userId", async (req, res) => {
     }
     res.json(usuario);
   } catch (err) {
+    console.error(err); // Mostrar el error en la consola
     res.status(500).json({ message: "Error al leer los usuarios" });
   }
 });

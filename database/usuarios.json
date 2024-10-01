@@ -1,5 +1,44 @@
 [
-  { "id": 1, "nombre": "Diego", "apellido": "Perez", "edad": 40 },
-  { "id": 2, "nombre": "Dardo", "apellido": "Milanesio", "edad": 23 },
-  { "id": 3, "nombre": "Carolina", "apellido": "Tomatis", "edad": 35 }
+  {
+    "id": "66fc5d36f07a730c05c73bf8",
+    "nombre": "Diego",
+    "apellido": "Perez",
+    "edad": 40,
+    "correo": "Diegoperez@gmail.com"
+  },
+  {
+    "id": "66fc5ed1f07a730c05c73bf9",
+    "nombre": "Dardo",
+    "apellido": "Milanesio",
+    "edad": 23,
+    "correo": "DardoMilanesio@gmail.com"
+  },
+  {
+    "id": "66fc5f35f07a730c05c73bfa",
+    "nombre": "Carolina",
+    "apellido": "Tomatis",
+    "edad": 35,
+    "correo": "CarolinaTomatis@gmail.com"
+  },
+  {
+    "id": "66fc61a5f07a730c05c73bfb",
+    "nombre": "Florencia",
+    "apellido": "Giuste",
+    "edad": 30,
+    "correo": "FlorenciaGiuste@gmail.com"
+  },
+  {
+    "id": "66fc61f9f07a730c05c73bfc",
+    "nombre": "Roberto",
+    "apellido": "Retop",
+    "edad": 50,
+    "correo": "RobertoRetop@gmil.com"
+  },
+  {
+    "id": "66fc626af07a730c05c73bfd",
+    "nombre": "Milagros",
+    "apellido": "Amendola",
+    "edad": 23,
+    "correo": "MilagrosAmendola@gmail.com"
+  }
 ]
