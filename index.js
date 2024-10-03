@@ -1,6 +1,6 @@
 import express from "express";
 import helmet from "helmet";
-import mongoose from "mongoose"; // Importar mongoose
+import mongoose from "mongoose";
 import productsRouter from "./routes/products.js";
 import cartsRouter from "./routes/carts.js";
 import usersRouter from "./routes/users.js";
@@ -17,11 +17,7 @@ const __dirname = dirname(__filename);
 // Conectar a MongoDB
 mongoose
   .connect(
-    "mongodb+srv://marceloivanregali:8924578mro@cluster0.khst2.mongodb.net/project0",
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    }
+    "mongodb+srv://marceloivanregali:8924578mro@cluster0.khst2.mongodb.net/project0"
   )
   .then(() => console.log("Conectado a MongoDB"))
   .catch((err) => console.error("Error de conexión a MongoDB:", err));
@@ -104,5 +100,5 @@ io.on("connection", (socket) => {
 
 // Iniciar el servidor
 const httpServer = server.listen(8080, () => {
-  console.log("Server ON en http://localhost:8080");
+  console.log("Server ON ");
 });

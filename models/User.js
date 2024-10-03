@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema({
   last_name: { type: String, required: true },
   age: { type: Number, required: true },
   correo: { type: String, required: true, unique: true },
-  password: { type: String, required: true }, // Campo de contraseña
+  password: { type: String, required: true },
 });
 
 const User = mongoose.model("User", userSchema);
