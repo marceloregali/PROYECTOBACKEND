@@ -1,6 +1,37 @@
 <div>
+  <h1>Lista de Productos con Paginación</h1>
+
+  <!-- Productos paginados -->
+  <ul>
+    {{#each productos}}
+      <li>
+        <a href="/products/{{this._id}}">{{this.title}}</a>
+        - Precio:
+        {{this.price}}
+        <form action="/carts/{{cartId}}/product/{{this._id}}" method="POST">
+          <button type="submit">Agregar al carrito</button>
+        </form>
+      </li>
+    {{/each}}
+  </ul>
+
+  <!-- Paginación -->
+  <nav>
+    <ul>
+      {{#if hasPrevPage}}
+        <li><a href="?page={{prevPage}}">Anterior</a></li>
+      {{/if}}
+
+      {{#if hasNextPage}}
+        <li><a href="?page={{nextPage}}">Siguiente</a></li>
+      {{/if}}
+    </ul>
+  </nav>
+</div>
+
+<!--<div>
   <h1>Todo listo para trabajar con websockets </h1>
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/index.js"></script>
+<script src="/js/index.js"></script>-->

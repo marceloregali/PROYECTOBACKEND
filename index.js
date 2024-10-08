@@ -34,7 +34,7 @@ app.set("view engine", "handlebars");
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(__dirname + "/public")); // Servir archivos estáticos
+app.use(express.static(__dirname + "/public"));
 app.use(helmet());
 app.use(
   helmet.contentSecurityPolicy({
@@ -47,8 +47,7 @@ app.use(
   })
 );
 
-// Rutas
-app.use("/", viewsRoute); // Rutas de vistas
+app.use("/", viewsRoute);
 app.get("/", (req, res) => {
   res.send("Hola, soy un servidor");
 });
@@ -68,18 +67,17 @@ app.get("/usuario", (req, res) => {
   res.send(usuario);
 });
 
-// Rutas API
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/users", usersRouter);
 
-// Configuración de WebSocket
 io.on("connection", (socket) => {
   console.log("Nuevo cliente conectado");
 
   const sendProductList = async () => {
     try {
       const response = await fetch("http://localhost:8080/api/products");
+      if (!response.ok) throw new Error("Error en la respuesta de la API");
       const products = await response.json();
       io.emit("updateProducts", products);
     } catch (error) {
@@ -98,7 +96,6 @@ io.on("connection", (socket) => {
   });
 });
 
-// Iniciar el servidor
 const httpServer = server.listen(8080, () => {
-  console.log("Server ON ");
+  console.log("Server ON");
 });

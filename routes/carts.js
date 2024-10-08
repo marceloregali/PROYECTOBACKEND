@@ -1,11 +1,10 @@
 import express from "express";
 import fs from "fs/promises";
-import Cart from "../models/cart.js"; // Asegúrate de que la ruta sea correcta
-import Product from "../models/product.js"; // Asegúrate de que la ruta sea correcta
+import Cart from "../models/cart.js";
 
 const router = express.Router();
 
-// Crear un nuevo carrito
+// Creo un nuevo carrito
 router.post("/", async (req, res) => {
   try {
     const newCart = new Cart();
@@ -57,12 +56,12 @@ router.delete("/:cid/products/:pid", async (req, res) => {
   }
 });
 
-// Obtener todos los productos de un carrito
+// Obtengo todos los productos de un carrito
 router.get("/:cid", async (req, res) => {
   const { cid } = req.params;
 
   try {
-    const carrito = await Cart.findById(cid).populate("productos.product"); // Población para obtener detalles del producto
+    const carrito = await Cart.findById(cid).populate("productos.product");
 
     if (!carrito) {
       return res.status(404).json({ message: "Carrito no encontrado" });
@@ -90,16 +89,14 @@ router.delete("/:cid", async (req, res) => {
     await carrito.emptyCart();
     res.json({ message: "Todos los productos eliminados del carrito" });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "Error al eliminar productos del carrito",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Error al eliminar productos del carrito",
+      error: error.message,
+    });
   }
 });
 
-// Actualizar un carrito con un arreglo de productos
+// Actualizo un carrito con un arreglo de productos
 router.put("/:cid", async (req, res) => {
   const { cid } = req.params;
   const { productos } = req.body;
@@ -112,7 +109,7 @@ router.put("/:cid", async (req, res) => {
     }
 
     carrito.productos = productos.map((item) => ({
-      product: item.product, // Asegúrate de que este sea un ObjectId válido
+      product: item.product,
       quantity: item.quantity,
     }));
 
@@ -151,12 +148,10 @@ router.put("/:cid/products/:pid", async (req, res) => {
     await carrito.save();
     res.json({ message: "Cantidad de producto actualizada", carrito });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "Error al actualizar cantidad de producto",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Error al actualizar cantidad de producto",
+      error: error.message,
+    });
   }
 });
 

@@ -17,7 +17,7 @@ const cartSchema = new mongoose.Schema({
   ],
 });
 
-// Agregar un producto al carrito
+// Agrego un producto al carrito
 cartSchema.methods.addProduct = function (productId, quantity) {
   const existingProductIndex = this.productos.findIndex(
     (p) => p.product.toString() === productId
@@ -33,7 +33,7 @@ cartSchema.methods.addProduct = function (productId, quantity) {
   return this.save();
 };
 
-// Eliminar un producto del carrito
+// Elimino un producto del carrito
 cartSchema.methods.removeProduct = function (productId) {
   this.productos = this.productos.filter(
     (p) => p.product.toString() !== productId
@@ -41,12 +41,12 @@ cartSchema.methods.removeProduct = function (productId) {
   return this.save();
 };
 
-// Vaciar el carrito
+// Vacio el carrito
 cartSchema.methods.emptyCart = function () {
   this.productos = [];
   return this.save();
 };
 
-// Crear y exportar el modelo de carrito
+// Creo y exporto el modelo de carrito
 const Cart = mongoose.model("Cart", cartSchema);
 export default Cart;
