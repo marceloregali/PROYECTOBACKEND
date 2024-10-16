@@ -1,0 +1,30 @@
+{{! views/cartDetail.handlebars }}
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detalles del Carrito</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Detalles del Carrito</h1>
+      <ul class="list-group">
+        {{#each carrito.products}}
+          <li class="list-group-item">
+            <strong>Producto:</strong>
+            {{this.title}}
+            -
+            <strong>Cantidad:</strong>
+            {{this.quantity}}
+          </li>
+        {{/each}}
+      </ul>
+      <a href="/products" class="btn btn-primary mt-3">Volver a la tienda</a>
+    </div>
+  </body>
+</html>

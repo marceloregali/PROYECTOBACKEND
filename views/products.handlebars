@@ -1,0 +1,55 @@
+{{! views/products.handlebars }}
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lista de Productos</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="my-4">Lista de Productos</h1>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Título</th>
+            <th>Descripción</th>
+            <th>Código</th>
+            <th>Precio</th>
+            <th>Estado</th>
+            <th>Stock</th>
+            <th>Categoría</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each productos}}
+            <tr>
+              <td>{{@index}}</td>
+              <td>{{title}}</td>
+              <td>{{description}}</td>
+              <td>{{code}}</td>
+              <td>{{price}}</td>
+              <td>{{#if available}}Disponible{{else}}No disponible{{/if}}</td>
+              <td>{{stock}}</td>
+              <td>{{category}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+      <a href="/" class="btn btn-primary">Volver a inicio</a>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.11/dist/umd/popper.min.js"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+    ></script>
+  </body>
+</html>

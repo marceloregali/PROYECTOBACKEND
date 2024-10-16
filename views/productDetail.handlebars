@@ -1,0 +1,26 @@
+{{! views/productDetail.handlebars }}
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detalles del Producto</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Detalles del Producto</h1>
+      <p><strong>ID:</strong> {{producto.id}}</p>
+      <p><strong>Título:</strong> {{producto.title}}</p>
+      <p><strong>Descripción:</strong> {{producto.description}}</p>
+      <p><strong>Código:</strong> {{producto.code}}</p>
+      <p><strong>Precio:</strong> {{producto.price}}</p>
+      <p><strong>Stock:</strong> {{producto.stock}}</p>
+      <p><strong>Categoría:</strong> {{producto.category}}</p>
+      <a href="/api/carts" class="btn btn-success">Agregar al Carrito</a>
+    </div>
+  </body>
+</html>
