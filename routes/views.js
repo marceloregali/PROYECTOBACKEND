@@ -3,14 +3,23 @@ import fetch from "node-fetch";
 
 const router = Router();
 
-// Productos paginados
+// Productos de los  paginados
 router.get("/products", async (req, res) => {
   try {
     const { page = 1, limit = 10 } = req.query;
     const response = await fetch(
       `http://localhost:8080/api/products?page=${page}&limit=${limit}`
     );
+
+    // Verifico  las respuestas
+    if (!response.ok) {
+      throw new Error("Error en la respuesta de la API");
+    }
+
     const productos = await response.json();
+
+    // depuración
+    console.log("Productos obtenidos:", productos);
 
     res.render("index", {
       productos: productos.payload,
@@ -31,9 +40,15 @@ router.get("/products/:pid", async (req, res) => {
   try {
     const { pid } = req.params;
     const response = await fetch(`http://localhost:8080/api/products/${pid}`);
+
+    // Verifico la respuesta
+    if (!response.ok) {
+      throw new Error("Error en la respuesta de la API");
+    }
+
     const producto = await response.json();
 
-    if (producto.status === "error") {
+    if (!producto || producto.status === "error") {
       return res.status(404).send("Producto no encontrado");
     }
 
@@ -44,14 +59,21 @@ router.get("/products/:pid", async (req, res) => {
   }
 });
 
-// Ver un carrito específico
+// Veo 1 carrito específico
 router.get("/carts/:cid", async (req, res) => {
   try {
     const { cid } = req.params;
     const response = await fetch(`http://localhost:8080/api/carts/${cid}`);
+
+    // Verifico la respuesta
+    if (!response.ok) {
+      throw new Error("Error en la respuesta de la API");
+    }
+
     const carrito = await response.json();
 
-    if (carrito.status === "error") {
+    // me aseguro de que el carrito tiene el campo esperado
+    if (!carrito || carrito.status === "error") {
       return res.status(404).send("Carrito no encontrado");
     }
 
@@ -66,9 +88,14 @@ router.get("/carts/:cid", async (req, res) => {
 router.get("/home", async (req, res) => {
   try {
     const response = await fetch("http://localhost:8080/api/products");
-    const productos = await response.json();
 
-    res.render("home", { productos });
+    // Verifico la respuesta
+    if (!response.ok) {
+      throw new Error("Error en la respuesta de la API");
+    }
+
+    const productos = await response.json();
+    res.render("home", { productos: productos.payload || [] });
   } catch (error) {
     console.error("Error al obtener productos:", error);
     res.status(500).send("Error al obtener productos");

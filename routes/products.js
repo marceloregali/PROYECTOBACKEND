@@ -3,7 +3,7 @@ import Product from "../models/product.js";
 
 const router = express.Router();
 
-// Obtener productos desde MongoDB con limit, page, sort y query
+// Obtengo los productos desde MongoDB con limit, page, sort y query
 router.get("/", async (req, res) => {
   try {
     const { limit = 10, page = 1, sort, query } = req.query;
@@ -13,7 +13,7 @@ router.get("/", async (req, res) => {
       sort: sort ? { price: sort === "asc" ? 1 : -1 } : {},
     };
 
-    // Filtrar por categoría o si hay disponible
+    // Filtro por categoría o si hay disponible
     const filters = {};
     if (query) {
       filters.$or = [
