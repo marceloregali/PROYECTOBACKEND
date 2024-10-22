@@ -18,13 +18,12 @@ router.get("/", async (req, res) => {
     if (query) {
       filters.$or = [
         { category: new RegExp(query, "i") },
-        { available: query === "true" }, // Filtro por disponibilidad
+        { available: query === "true" },
       ];
     }
 
     const productos = await Product.paginate(filters, options);
 
-    // Log para depuración
     console.log("Productos obtenidos de MongoDB:", productos);
 
     res.json({
@@ -34,8 +33,8 @@ router.get("/", async (req, res) => {
       page: productos.page,
       hasPrevPage: productos.hasPrevPage,
       hasNextPage: productos.hasNextPage,
-      prevPage: productos.prevPage || null, // Prevención de valores null
-      nextPage: productos.nextPage || null, // Prevención de valores null
+      prevPage: productos.prevPage || null,
+      nextPage: productos.nextPage || null,
     });
   } catch (err) {
     console.error("Error al obtener productos:", err);
