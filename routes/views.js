@@ -3,7 +3,7 @@ import fetch from "node-fetch";
 
 const router = Router();
 
-// Productos de los  paginados
+// Productos paginados
 router.get("/products", async (req, res) => {
   try {
     const { page = 1, limit = 10 } = req.query;
@@ -11,14 +11,13 @@ router.get("/products", async (req, res) => {
       `http://localhost:8080/api/products?page=${page}&limit=${limit}`
     );
 
-    // Verifico  las respuestas
     if (!response.ok) {
       throw new Error("Error en la respuesta de la API");
     }
 
     const productos = await response.json();
 
-    // depuración
+    // Verificación y depuración
     console.log("Productos obtenidos:", productos);
 
     res.render("index", {
@@ -26,8 +25,12 @@ router.get("/products", async (req, res) => {
       page: productos.page,
       hasPrevPage: productos.hasPrevPage,
       hasNextPage: productos.hasNextPage,
-      prevLink: productos.prevLink,
-      nextLink: productos.nextLink,
+      prevLink: productos.prevPage
+        ? `/products?page=${productos.prevPage}&limit=${limit}`
+        : null,
+      nextLink: productos.nextPage
+        ? `/products?page=${productos.nextPage}&limit=${limit}`
+        : null,
     });
   } catch (error) {
     console.error("Error al obtener productos:", error);
@@ -41,7 +44,6 @@ router.get("/products/:pid", async (req, res) => {
     const { pid } = req.params;
     const response = await fetch(`http://localhost:8080/api/products/${pid}`);
 
-    // Verifico la respuesta
     if (!response.ok) {
       throw new Error("Error en la respuesta de la API");
     }
@@ -59,20 +61,18 @@ router.get("/products/:pid", async (req, res) => {
   }
 });
 
-// Veo 1 carrito específico
+// Ver un carrito específico
 router.get("/carts/:cid", async (req, res) => {
   try {
     const { cid } = req.params;
     const response = await fetch(`http://localhost:8080/api/carts/${cid}`);
 
-    // Verifico la respuesta
     if (!response.ok) {
       throw new Error("Error en la respuesta de la API");
     }
 
     const carrito = await response.json();
 
-    // me aseguro de que el carrito tiene el campo esperado
     if (!carrito || carrito.status === "error") {
       return res.status(404).send("Carrito no encontrado");
     }
@@ -84,12 +84,11 @@ router.get("/carts/:cid", async (req, res) => {
   }
 });
 
-// Página principal
+// Página principal (home)
 router.get("/home", async (req, res) => {
   try {
     const response = await fetch("http://localhost:8080/api/products");
 
-    // Verifico la respuesta
     if (!response.ok) {
       throw new Error("Error en la respuesta de la API");
     }
@@ -102,7 +101,7 @@ router.get("/home", async (req, res) => {
   }
 });
 
-// Página de productos en tiempo real
+// Productos en tiempo real
 router.get("/realtimeproducts", (req, res) => {
   res.render("realtimeproducts");
 });

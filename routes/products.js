@@ -3,7 +3,7 @@ import Product from "../models/product.js";
 
 const router = express.Router();
 
-// Obtengo los productos desde MongoDB con limit, page, sort y query
+// Obtener productos con limit, page, sort y query
 router.get("/", async (req, res) => {
   try {
     const { limit = 10, page = 1, sort, query } = req.query;
@@ -13,16 +13,19 @@ router.get("/", async (req, res) => {
       sort: sort ? { price: sort === "asc" ? 1 : -1 } : {},
     };
 
-    // Filtro por categoría o si hay disponible
+    // Filtro por categoría o disponibilidad
     const filters = {};
     if (query) {
       filters.$or = [
         { category: new RegExp(query, "i") },
-        { available: query },
+        { available: query === "true" }, // Filtro por disponibilidad
       ];
     }
 
     const productos = await Product.paginate(filters, options);
+
+    // Log para depuración
+    console.log("Productos obtenidos de MongoDB:", productos);
 
     res.json({
       status: "success",
@@ -31,17 +34,18 @@ router.get("/", async (req, res) => {
       page: productos.page,
       hasPrevPage: productos.hasPrevPage,
       hasNextPage: productos.hasNextPage,
-      prevPage: productos.prevPage,
-      nextPage: productos.nextPage,
+      prevPage: productos.prevPage || null, // Prevención de valores null
+      nextPage: productos.nextPage || null, // Prevención de valores null
     });
   } catch (err) {
+    console.error("Error al obtener productos:", err);
     res
       .status(500)
       .json({ status: "error", message: "Error al leer los productos" });
   }
 });
 
-// Obtengo un producto por ID desde MongoDB
+// Obtener producto por ID
 router.get("/:id", async (req, res) => {
   try {
     const producto = await Product.findById(req.params.id);
@@ -53,18 +57,17 @@ router.get("/:id", async (req, res) => {
     }
     res.json({ status: "success", payload: producto });
   } catch (err) {
+    console.error("Error al obtener producto:", err);
     res
       .status(500)
       .json({ status: "error", message: "Error al leer el producto" });
   }
 });
 
-// Agrego un nuevo producto a la base de datos de MongoDB
+// Agregar un nuevo producto
 router.post("/", async (req, res) => {
   try {
     const nuevoProducto = new Product(req.body);
-
-    // Guardo el producto en la base de datos
     await nuevoProducto.save();
 
     res.status(201).json({
@@ -73,6 +76,7 @@ router.post("/", async (req, res) => {
       payload: nuevoProducto,
     });
   } catch (err) {
+    console.error("Error al agregar producto:", err);
     res.status(500).json({
       status: "error",
       message: "Error al agregar producto",
@@ -81,7 +85,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Elimino un producto por ID desde MongoDB
+// Eliminar un producto por ID
 router.delete("/:id", async (req, res) => {
   try {
     const producto = await Product.findByIdAndDelete(req.params.id);
@@ -93,6 +97,7 @@ router.delete("/:id", async (req, res) => {
     }
     res.json({ status: "success", message: "Producto eliminado" });
   } catch (err) {
+    console.error("Error al eliminar producto:", err);
     res.status(500).json({
       status: "error",
       message: "Error al eliminar producto",
