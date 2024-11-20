@@ -1,15 +1,16 @@
 import express from "express";
 import helmet from "helmet";
 import mongoose from "mongoose";
+import cookieParser from "cookie-parser"; // Importar cookie-parser
 import productsRouter from "./routes/products.js";
 import cartsRouter from "./routes/carts.js";
 import usersRouter from "./routes/users.js";
+import viewsRoute from "./routes/views.js";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import Handlebars from "express-handlebars";
 import http from "http";
 import { Server as SocketIOServer } from "socket.io";
-import viewsRoute from "./routes/views.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -46,31 +47,33 @@ app.use(
     },
   })
 );
+app.use(cookieParser()); // Activar cookie-parser
 
+// Rutas para manejo de cookies
+app.get("/set-cookie", (req, res) => {
+  res.cookie("usuario", "Marcelo", {
+    maxAge: 1000 * 60 * 60,
+    httpOnly: true,
+  });
+  res.send("Cookie 'usuario' establecida");
+});
+
+app.get("/get-cookies", (req, res) => {
+  res.send(`Tus cookies: ${JSON.stringify(req.cookies)}`);
+});
+
+app.get("/delete-cookie", (req, res) => {
+  res.clearCookie("usuario");
+  res.send("Cookie 'usuario' eliminada");
+});
+
+// Rutas principales
 app.use("/", viewsRoute);
-app.get("/", (req, res) => {
-  res.send("Hola, soy un servidor");
-});
-
-app.get("/bienvenida", (req, res) => {
-  res.send(
-    `<h1 style="color:blue;"> Bienvenido a mi primer servidor express</h1>`
-  );
-});
-
-app.get("/usuario", (req, res) => {
-  const usuario = {
-    nombre: "Pedro",
-    edad: 30,
-    apellido: "Perez",
-  };
-  res.send(usuario);
-});
-
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/users", usersRouter);
 
+// Socket.IO
 io.on("connection", (socket) => {
   console.log("Nuevo cliente conectado");
 
@@ -96,6 +99,13 @@ io.on("connection", (socket) => {
   });
 });
 
+// Middleware de error
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send("Algo salió mal");
+});
+
+// Iniciar Servidor
 const httpServer = server.listen(8080, () => {
   console.log("Server ON");
 });

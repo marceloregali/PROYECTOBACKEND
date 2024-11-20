@@ -4,7 +4,7 @@ import fetch from "node-fetch";
 const router = Router();
 
 // Productos paginados
-router.get("/products", async (req, res) => {
+router.get("/products", async (req, res, next) => {
   try {
     const { page = 1, limit = 10 } = req.query;
     const response = await fetch(
@@ -16,10 +16,6 @@ router.get("/products", async (req, res) => {
     }
 
     const productos = await response.json();
-
-    // Verificación y depuración
-    console.log("Productos obtenidos:", productos);
-
     res.render("index", {
       productos: productos.payload,
       page: productos.page,
@@ -34,12 +30,12 @@ router.get("/products", async (req, res) => {
     });
   } catch (error) {
     console.error("Error al obtener productos:", error);
-    res.status(500).send("Error al obtener productos");
+    next(error);
   }
 });
 
 // Ver un producto específico
-router.get("/products/:pid", async (req, res) => {
+router.get("/products/:pid", async (req, res, next) => {
   try {
     const { pid } = req.params;
     const response = await fetch(`http://localhost:8080/api/products/${pid}`);
@@ -57,12 +53,12 @@ router.get("/products/:pid", async (req, res) => {
     res.render("productDetail", { producto: producto.payload });
   } catch (error) {
     console.error("Error al obtener producto:", error);
-    res.status(500).send("Error al obtener producto");
+    next(error);
   }
 });
 
 // Ver un carrito específico
-router.get("/carts/:cid", async (req, res) => {
+router.get("/carts/:cid", async (req, res, next) => {
   try {
     const { cid } = req.params;
     const response = await fetch(`http://localhost:8080/api/carts/${cid}`);
@@ -80,12 +76,12 @@ router.get("/carts/:cid", async (req, res) => {
     res.render("cartDetail", { carrito: carrito.payload });
   } catch (error) {
     console.error("Error al obtener carrito:", error);
-    res.status(500).send("Error al obtener carrito");
+    next(error);
   }
 });
 
 // Página principal (home)
-router.get("/home", async (req, res) => {
+router.get("/home", async (req, res, next) => {
   try {
     const response = await fetch("http://localhost:8080/api/products");
 
@@ -97,7 +93,7 @@ router.get("/home", async (req, res) => {
     res.render("home", { productos: productos.payload || [] });
   } catch (error) {
     console.error("Error al obtener productos:", error);
-    res.status(500).send("Error al obtener productos");
+    next(error);
   }
 });
 
