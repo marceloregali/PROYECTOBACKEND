@@ -1,7 +1,9 @@
 import express from "express";
 import helmet from "helmet";
 import mongoose from "mongoose";
-import cookieParser from "cookie-parser"; // Importar cookie-parser
+import cookieParser from "cookie-parser";
+import session from "express-session";
+import passport from "passport";
 import productsRouter from "./routes/products.js";
 import cartsRouter from "./routes/carts.js";
 import usersRouter from "./routes/users.js";
@@ -11,9 +13,18 @@ import { dirname } from "path";
 import Handlebars from "express-handlebars";
 import http from "http";
 import { Server as SocketIOServer } from "socket.io";
+import bcrypt from "bcrypt";
+import User from "./models/User.js";
+import initializePassport from "./config/passportConfig.js"; // Importa la configuración de Passport
+import fetch from "node-fetch"; // Asegúrate de instalar esta librería si usas Node <18
 
+// Configuración para trabajar con rutas en ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+const app = express();
+const server = http.createServer(app);
+const io = new SocketIOServer(server);
 
 // Conectar a MongoDB
 mongoose
@@ -22,10 +33,6 @@ mongoose
   )
   .then(() => console.log("Conectado a MongoDB"))
   .catch((err) => console.error("Error de conexión a MongoDB:", err));
-
-const app = express();
-const server = http.createServer(app);
-const io = new SocketIOServer(server);
 
 // Configuración de Handlebars
 app.engine("handlebars", Handlebars.engine());
@@ -42,19 +49,61 @@ app.use(
     useDefaults: true,
     directives: {
       "default-src": ["'self'"],
-      "style-src": ["'self'", "https://fonts.googleapis.com"],
+      "style-src": [
+        "'self'",
+        "https://fonts.googleapis.com",
+        "'unsafe-inline'",
+      ],
       "font-src": ["'self'", "https://fonts.gstatic.com"],
+      "script-src": ["'self'", "'unsafe-inline'"],
     },
   })
 );
-app.use(cookieParser()); // Activar cookie-parser
+app.use(cookieParser());
+app.use(
+  session({
+    secret: "secretKey", // Clave secreta para firmar la sesión
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
-// Rutas para manejo de cookies
-app.get("/set-cookie", (req, res) => {
-  res.cookie("usuario", "Marcelo", {
-    maxAge: 1000 * 60 * 60,
-    httpOnly: true,
+// Inicialización de Passport
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Rutas de Autenticación
+app.post(
+  "/login",
+  passport.authenticate("local", {
+    successRedirect: "/dashboard",
+    failureRedirect: "/login",
+    failureFlash: false,
+  })
+);
+
+app.post("/signup", async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await User.create({ email, password: hashedPassword });
+    res.redirect("/login");
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.get("/logout", (req, res, next) => {
+  req.logout((err) => {
+    if (err) return next(err);
+    res.redirect("/login");
   });
+});
+
+// Rutas de Cookies
+app.get("/set-cookie", (req, res) => {
+  res.cookie("usuario", "Marcelo", { maxAge: 3600000, httpOnly: true });
   res.send("Cookie 'usuario' establecida");
 });
 
@@ -90,13 +139,8 @@ io.on("connection", (socket) => {
 
   sendProductList();
 
-  socket.on("productUpdated", async () => {
-    sendProductList();
-  });
-
-  socket.on("disconnect", () => {
-    console.log("Cliente desconectado");
-  });
+  socket.on("productUpdated", sendProductList);
+  socket.on("disconnect", () => console.log("Cliente desconectado"));
 });
 
 // Middleware de error
@@ -106,6 +150,4 @@ app.use((err, req, res, next) => {
 });
 
 // Iniciar Servidor
-const httpServer = server.listen(8080, () => {
-  console.log("Server ON");
-});
+server.listen(8080, () => console.log("Server ON"));
