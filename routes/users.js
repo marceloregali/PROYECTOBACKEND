@@ -1,87 +1,65 @@
-import express from "express";
+import { Router } from "express";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import User from "../models/User.js";
-const router = express.Router();
 
-// Veo todos los usuarios
-router.get("/", async (req, res) => {
+const router = Router();
+const SECRET_KEY = process.env.SECRET_KEY || "default_secret_key";
+
+// Ruta para registrar un nuevo usuario
+router.post("/register", async (req, res) => {
+  const { first_name, last_name, email, age, password } = req.body;
+
+  // Verifica si ya existe el correo
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    return res.status(400).json({ message: "El correo ya está registrado" });
+  }
+
+  // Encriptar la contraseña
+  const hashedPassword = bcrypt.hashSync(password, 10);
+
+  // Crear un nuevo usuario
+  const newUser = new User({
+    first_name,
+    last_name,
+    email,
+    age,
+    password: hashedPassword,
+  });
+
   try {
-    const usuarios = await User.find(); // Obtener todos los usuarios de la base de datos
-    res.json(usuarios);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Error al leer los usuarios" });
+    const savedUser = await newUser.save();
+    res.status(201).json({ message: "Usuario registrado", user: savedUser });
+  } catch (error) {
+    res.status(500).json({ message: "Error al registrar el usuario" });
   }
 });
 
-// Veo un usuario por ID
-router.get("/:userId", async (req, res) => {
+// Ruta para login y generación de token JWT
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+
   try {
-    const idUsuario = req.params.userId;
-    const usuario = await User.findById(idUsuario); // Buscar un usuario por ID (ya registrado)
-    if (!usuario) {
-      return res
-        .status(404)
-        .json({ message: `Usuario con ID ${idUsuario} no encontrado` });
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
     }
-    res.json(usuario);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Error al leer el usuario" });
-  }
-});
 
-// Creo un nuevo usuario
-router.post("/", async (req, res) => {
-  const { name, last_name, age, correo, password } = req.body;
-  const nuevoUsuario = new User({ name, last_name, age, correo, password });
-
-  try {
-    const usuarioGuardado = await nuevoUsuario.save(); // Guardardo nuevo usuario
-    res.status(201).json(usuarioGuardado);
-  } catch (err) {
-    console.error(err);
-    res.status(400).json({ message: "Error al crear el usuario" });
-  }
-});
-
-// Modifico un usuario por ID
-router.put("/:userId", async (req, res) => {
-  const { userId } = req.params;
-  const { name, last_name, age, correo, password } = req.body;
-
-  try {
-    const usuarioActualizado = await User.findByIdAndUpdate(
-      userId,
-      { name, last_name, age, correo, password },
-      { new: true } // veo el usuario actualizado
-    );
-    if (!usuarioActualizado) {
-      return res
-        .status(404)
-        .json({ message: `Usuario con ID ${userId} no encontrado` });
+    // Verifica la contraseña
+    const isMatch = bcrypt.compareSync(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Contraseña incorrecta" });
     }
-    res.json(usuarioActualizado);
-  } catch (err) {
-    console.error(err);
-    res.status(400).json({ message: "Error al actualizar el usuario" });
-  }
-});
 
-// Borro un usuario por ID
-router.delete("/:userId", async (req, res) => {
-  const { userId } = req.params;
+    // Genera el token JWT
+    const token = jwt.sign({ id: user._id, role: user.role }, SECRET_KEY, {
+      expiresIn: "1h", // Expiración del token (1 hora)
+    });
 
-  try {
-    const usuarioEliminado = await User.findByIdAndDelete(userId);
-    if (!usuarioEliminado) {
-      return res
-        .status(404)
-        .json({ message: `Usuario con ID ${userId} no encontrado` });
-    }
-    res.json({ message: `Usuario con ID ${userId} eliminado` });
-  } catch (err) {
-    console.error(err);
-    res.status(400).json({ message: "Error al eliminar el usuario" });
+    res.json({ message: "Login exitoso", token });
+  } catch (error) {
+    res.status(500).json({ message: "Error durante el login" });
   }
 });
 

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mi Proyecto</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <!-- Archivo externo de estilos -->
+    <style>
+      /* General Styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh; /* Altura mínima para ocupar toda la ventana */
+      }
+
+      /* Navbar Styles */
+      nav {
+        position: fixed; /* Fijo en la parte superior */
+        top: 0;
+        left: 0;
+        width: 100%; /* Ocupa todo el ancho */
+        background-color: #343a40;
+        color: white;
+        padding: 10px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 1000; /* Siempre encima */
+      }
+
+      nav a {
+        color: white;
+        text-decoration: none;
+        margin: 0 10px;
+      }
+
+      /* Content Styles */
+      main {
+        flex: 1; /* El contenido ocupa todo el espacio restante */
+        margin-top: 70px; /* Compensa la altura del navbar */
+        margin-bottom: 70px; /* Compensa la altura del footer */
+        padding: 20px;
+      }
+
+      /* Footer Styles */
+      footer {
+        position: fixed; /* Fijo en la parte inferior */
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: #343a40;
+        color: white;
+        text-align: center;
+        padding: 20px;
+        z-index: 1000; /* Siempre encima */
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav>
+      <div>
+        <a href="/" style="font-size: 1.5em; font-weight: bold">Mi Proyecto</a>
+      </div>
+      <div>
+        <a href="/carrito"><i class="fas fa-shopping-cart"></i> Carrito</a>
+        <a href="/usuarios"><i class="fas fa-user"></i> Usuarios</a>
+        <a href="/logout"><i class="fas fa-sign-out-alt"></i> Salir</a>
+      </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <main>
+      <h1>Bienvenido a Mi Proyecto</h1>
+      <p>Este es el contenido principal de tu página.</p>
+      <p>
+        Desplázate hacia abajo para ver cómo el footer permanece fijo mientras
+        navegas.
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+        tristique, lorem at tincidunt fringilla, felis quam ultrices nisi, a
+        feugiat neque justo vitae nulla.
+      </p>
+      <p style="margin-top: 1000px">
+        Contenido adicional para mostrar el desplazamiento.
+      </p>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <p>© 2024 Tu Empresa - Todos los derechos reservados.</p>
+    </footer>
+  </body>
+</html>

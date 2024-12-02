@@ -1,0 +1,46 @@
+/* Estilos generales */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #333;
+  color: white;
+  padding: 10px 20px;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  margin: 0 10px;
+}
+
+.navbar a:hover {
+  text-decoration: underline;
+}
+
+/* Footer */
+.footer {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+/* Main content */
+.main-content {
+  padding: 20px;
+  min-height: calc(
+    100vh - 120px
+  ); /* Ajusta la altura excluyendo navbar y footer */
+}

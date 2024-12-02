@@ -1,18 +1,2 @@
-<h1>Lista de Productos</h1>
-<ul>
-  {{#each productos}}
-    <li>
-      <a href="/products/{{this._id}}">{{this.name}}</a>
-      - ${{this.price}}
-    </li>
-  {{/each}}
-</ul>
-
-<div>
-  {{#if hasPrevPage}}
-    <a href="/products?page={{dec page}}&limit={{limit}}">Página anterior</a>
-  {{/if}}
-  {{#if hasNextPage}}
-    <a href="/products?page={{inc page}}&limit={{limit}}">Página siguiente</a>
-  {{/if}}
-</div>
+<h1>Bienvenido a la tienda</h1>
+<p>Selecciona una opción del menú para comenzar.</p>

@@ -1,34 +1,29 @@
 import passport from "passport";
-import { Strategy as LocalStrategy } from "passport-local";
+import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
 import User from "../models/User.js";
 
-export default function initializePassport() {
-  passport.use(
-    new LocalStrategy(
-      { usernameField: "email", passwordField: "password" },
-      async (email, password, done) => {
-        try {
-          const user = await User.findOne({ email });
-          if (!user)
-            return done(null, false, { message: "Usuario no encontrado" });
-          const isValidPassword = await user.comparePassword(password);
-          if (!isValidPassword)
-            return done(null, false, { message: "Contraseña incorrecta" });
-          return done(null, user);
-        } catch (error) {
-          return done(error);
-        }
-      }
-    )
-  );
+const SECRET_KEY = process.env.JWT_SECRET_KEY || "your_secret_key"; // Usar clave secreta del .env
 
-  passport.serializeUser((user, done) => done(null, user.id));
-  passport.deserializeUser(async (id, done) => {
+const jwtOptions = {
+  jwtFromRequest: ExtractJwt.fromExtractors([
+    (req) => req.cookies.token, // Extraemos el token desde la cookie 'token'
+  ]),
+  secretOrKey: SECRET_KEY, // Clave secreta para verificar el JWT
+};
+
+passport.use(
+  new JwtStrategy(jwtOptions, async (jwtPayload, done) => {
     try {
-      const user = await User.findById(id);
-      done(null, user);
+      const user = await User.findById(jwtPayload.sub); // Buscamos al usuario por el ID en el JWT
+      if (user) {
+        return done(null, user); // Usuario encontrado
+      } else {
+        return done(null, false, { message: "Usuario no encontrado" }); // Usuario no encontrado
+      }
     } catch (error) {
-      done(error);
+      return done(error, false); // En caso de error en la búsqueda del usuario
     }
-  });
-}
+  })
+);
+
+export const initializePassport = () => passport.initialize(); // Inicializar passport

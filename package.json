@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",
@@ -12,7 +13,9 @@
   "type": "module",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.7",
+    "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-handlebars": "^8.0.1",
     "express-rate-limit": "^7.4.0",
@@ -20,11 +23,11 @@
     "handlebars": "^4.7.8",
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.7.0",
+    "mongoose": "^8.8.3",
     "mongoose-paginate-v2": "^1.8.5",
     "node-fetch": "^3.3.2",
-    "passport": "^0.7.0",
-    "passport-jwt": "^4.0.1",
+    "passport": "^0.5.3",
+    "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "socket.io": "^4.7.5",
     "socket.io-client": "^4.7.5",

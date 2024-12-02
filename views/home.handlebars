@@ -2,16 +2,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home</title>
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-    />
+    <title>{{title}}</title>
   </head>
   <body>
-    <div class="container">
-      <h1>Bienvenido a la página de inicio</h1>
-      <a href="/products" class="btn btn-primary">Ver productos</a>
-    </div>
+    <h1>{{message}}</h1>
+    <nav>
+      <ul>
+        <li><a href="/products">Productos</a></li>
+        <li><a href="/carts">Carrito</a></li>
+        <li><a href="/users">Usuarios</a></li>
+      </ul>
+    </nav>
   </body>
 </html>

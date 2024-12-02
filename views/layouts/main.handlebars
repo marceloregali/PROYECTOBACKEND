@@ -3,25 +3,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{title}}</title>
-
+    <link rel="stylesheet" href="/css/styles.css" />
   </head>
   <body>
-    <header>
-      <nav>
-        <ul>
-          <li><a href="/">Inicio</a></li>
-          <li><a href="/products">Productos</a></li>
-          <li><a href="/realtimeproducts">Productos en Tiempo Real</a></li>
-          <li><a href="/home">Home</a></li>
-        </ul>
-      </nav>
-    </header>
-
-    {{{body}}}
-    <!-- Renderizo la vista aquí -->
-
-    <footer>
-      <p>&copy; 2024 Tu Empresa. Todos los derechos reservados.</p>
-    </footer>
+    {{{navbar}}}
+    <!-- Navbar parcial -->
+    <div class="main-content">
+      {{{body}}}
+      <!-- Contenido principal -->
+    </div>
+    {{{footer}}}
+    <!-- Footer parcial -->
   </body>
 </html>
