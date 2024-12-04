@@ -1,29 +1,29 @@
 import passport from "passport";
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
-import User from "../models/User.js"; // Asegúrate de tener el modelo User
+import User from "../models/User.js";
 
-const SECRET_KEY = process.env.JWT_SECRET_KEY || "your_secret_key"; // Usa la clave secreta desde el archivo .env
+const SECRET_KEY = process.env.JWT_SECRET_KEY || "your_secret_key"; // Clave secreta desde el archivo .env
 
 // Configuración de la estrategia JWT
 const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromExtractors([
-    (req) => req.cookies.token, // Extraemos el token de la cookie llamada 'token'
+    (req) => req.cookies.token, // Extraigo el token de la cookie llamada 'token'
   ]),
-  secretOrKey: SECRET_KEY, // La clave secreta para validar el JWT
+  secretOrKey: SECRET_KEY, // Clave secreta para validar el JWT
 };
 
-// Configuración de la estrategia JWT
+// Configuro la estrategia JWT
 passport.use(
   new JwtStrategy(jwtOptions, async (jwtPayload, done) => {
     try {
-      // Intentamos encontrar el usuario usando el 'sub' (que es el ID del usuario en el JWT)
+      // Intentamos buscar el usuario usando el 'sub' (que es el ID del usuario en el JWT)
       const user = await User.findById(jwtPayload.sub);
 
       if (user) {
-        // Si el usuario existe, lo devolvemos
+        // Si el usuario existe, lo devuelve
         return done(null, user);
       } else {
-        // Si no se encuentra el usuario, devolvemos un error
+        // Si no se encuentra el usuario, devuelve un error
         return done(null, false, { message: "Usuario no encontrado" });
       }
     } catch (error) {
@@ -44,4 +44,4 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
-export default passport; // Exportamos Passport para usarlo en otros archivos
+export default passport;

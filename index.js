@@ -9,30 +9,36 @@ import { Server as SocketIOServer } from "socket.io";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import Handlebars from "express-handlebars";
+import dotenv from "dotenv";
+
+// Importar rutas
 import productsRouter from "./routes/products.js";
 import cartsRouter from "./routes/carts.js";
 import usersRouter from "./routes/users.js";
 import viewsRouter from "./routes/views.js";
-import Product from "./models/product.js"; // Modelo de producto
-import { initializePassport } from "./config/passportConfig.js"; // Corregido a importación nombrada
-import dotenv from "dotenv";
+import sessionsRouter from "./routes/sessions.js";
+
+// Importar modelos y configuraciones
+import Product from "./models/product.js";
+import { initializePassport } from "./config/passportConfig.js";
 
 // Configuración de ESModules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Cargar las variables de entorno desde el archivo .env
+// Cargar variables de entorno desde .env
 dotenv.config();
 
+// Configuración del servidor
 const app = express();
 const server = http.createServer(app);
 const io = new SocketIOServer(server);
 
-// Recupera las variables de entorno
-const SECRET_KEY = process.env.JWT_SECRET_KEY; // La clave secreta para JWT
-const MONGO_URI = process.env.MONGO_URI; // URI de conexión a MongoDB
+// Variables de entorno
+const SECRET_KEY = process.env.JWT_SECRET_KEY;
+const MONGO_URI = process.env.MONGO_URI;
 
-// Conectar a MongoDB
+// Conexión a MongoDB
 mongoose
   .connect(MONGO_URI)
   .then(() => console.log("Conectado a MongoDB"))
@@ -48,21 +54,28 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
 app.use(helmet());
-app.use(cookieParser()); // Habilitar cookie-parser para leer cookies
+app.use(cookieParser());
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || "secretKey", // Considera mover esto a .env
+    secret: process.env.SESSION_SECRET || "secretKey", // Clave secreta para la sesión
     resave: false,
     saveUninitialized: true,
   })
 );
 
-// Inicializar Passport y configurar la sesión
-initializePassport();
+// Inicialización de Passport
+initializePassport(); // Configuración de Passport
 app.use(passport.initialize());
-app.use(passport.session());
+app.use(passport.session()); // Habilita soporte de sesiones en Passport
 
-// Ruta para obtener los datos del usuario logueado (protegida)
+// Rutas
+app.use("/api/sessions", sessionsRouter);
+app.use("/", viewsRouter);
+app.use("/api/products", productsRouter);
+app.use("/api/carts", cartsRouter);
+app.use("/api/users", usersRouter);
+
+// Ruta protegida para obtener datos del usuario logueado
 app.get(
   "/api/sessions/current",
   passport.authenticate("jwt", { session: false }),
@@ -70,23 +83,20 @@ app.get(
     if (!req.user) {
       return res.status(401).json({ message: "No autenticado" });
     }
-    return res.json(req.user); // Devuelve los datos del usuario asociado al token JWT
+    res.json({
+      message: "Usuario autenticado",
+      user: req.user, // Datos del usuario
+    });
   }
 );
 
-// Rutas
-app.use("/", viewsRouter);
-app.use("/api/products", productsRouter);
-app.use("/api/carts", cartsRouter);
-app.use("/api/users", usersRouter);
-
-// WebSockets
+// Configuración de WebSockets
 io.on("connection", (socket) => {
   console.log("Nuevo cliente conectado");
 
   const sendProductList = async () => {
     const products = await Product.find();
-    io.emit("updateProducts", products);
+    io.emit("updateProducts", products); // Emite la lista de productos
   };
 
   sendProductList();
@@ -100,15 +110,15 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => console.log("Cliente desconectado"));
 });
 
-// Middleware de manejo de errores global
+// Middleware de manejo de errores
 app.use((err, req, res, next) => {
-  console.error(err); // Log del error en el servidor
-  const status = err.status || 500; // Si no se proporciona un código de estado, usamos 500 por defecto
-  const message = err.message || "Error interno del servidor"; // Si no hay mensaje, usamos uno genérico
+  console.error(err); // Log del error
+  const status = err.status || 500;
+  const message = err.message || "Error interno del servidor";
   res.status(status).json({ message });
 });
 
-// Iniciar el servidor
+// Inicio del servidor
 server.listen(8080, () =>
   console.log("Servidor escuchando en http://localhost:8080")
 );
