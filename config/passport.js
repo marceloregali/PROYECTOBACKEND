@@ -2,7 +2,7 @@ import passport from "passport";
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
 import User from "../models/User.js";
 
-const SECRET_KEY = process.env.JWT_SECRET_KEY || "your_secret_key"; // Clave secreta desde el archivo .env
+const SECRET_KEY = process.env.JWT_SECRET_KEY || "your_secret_key"; // Clave secreta  archivo .env
 
 // Configuración de la estrategia JWT
 const jwtOptions = {
@@ -12,11 +12,11 @@ const jwtOptions = {
   secretOrKey: SECRET_KEY, // Clave secreta para validar el JWT
 };
 
-// Configuro la estrategia JWT
+// Configuro estrategia JWT
 passport.use(
   new JwtStrategy(jwtOptions, async (jwtPayload, done) => {
     try {
-      // Intentamos buscar el usuario usando el 'sub' (que es el ID del usuario en el JWT)
+      // Buscar el usuario usando el 'sub' (que es el ID del usuario en el JWT)
       const user = await User.findById(jwtPayload.sub);
 
       if (user) {

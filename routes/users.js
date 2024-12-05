@@ -6,8 +6,6 @@ import User from "../models/User.js";
 const router = Router();
 const SECRET_KEY = process.env.SECRET_KEY || "default_secret_key";
 
-//
-
 // Ruta para registrar un nuevo usuario
 router.post("/register", async (req, res) => {
   const { first_name, last_name, email, age, password } = req.body;

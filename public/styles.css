@@ -40,7 +40,5 @@ body {
 /* Main content */
 .main-content {
   padding: 20px;
-  min-height: calc(
-    100vh - 120px
-  ); /* Ajusta la altura excluyendo navbar y footer */
+  min-height: calc(100vh - 120px);
 }

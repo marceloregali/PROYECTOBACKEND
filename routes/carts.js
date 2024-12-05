@@ -1,5 +1,5 @@
 import express from "express";
-import Cart from "../models/cart.js"; // Asegúrate de que esta ruta esté correcta.
+import Cart from "../models/cart.js";
 const router = express.Router();
 
 // Mostrar carrito

@@ -18,7 +18,7 @@ import usersRouter from "./routes/users.js";
 import viewsRouter from "./routes/views.js";
 import sessionsRouter from "./routes/sessions.js";
 
-// Importar modelos y configuraciones
+// Importo modelos y configuraciones
 import Product from "./models/product.js";
 import { initializePassport } from "./config/passportConfig.js";
 
@@ -26,7 +26,7 @@ import { initializePassport } from "./config/passportConfig.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Cargar variables de entorno desde .env
+// Variables de entorno desde .env
 dotenv.config();
 
 // Configuración del servidor
@@ -66,7 +66,7 @@ app.use(
 // Inicialización de Passport
 initializePassport(); // Configuración de Passport
 app.use(passport.initialize());
-app.use(passport.session()); // Habilita soporte de sesiones en Passport
+app.use(passport.session()); // Habilito sesiones en Passport
 
 // Rutas
 app.use("/api/sessions", sessionsRouter);
@@ -96,7 +96,7 @@ io.on("connection", (socket) => {
 
   const sendProductList = async () => {
     const products = await Product.find();
-    io.emit("updateProducts", products); // Emite la lista de productos
+    io.emit("updateProducts", products); // Lista de productos
   };
 
   sendProductList();
@@ -112,7 +112,7 @@ io.on("connection", (socket) => {
 
 // Middleware de manejo de errores
 app.use((err, req, res, next) => {
-  console.error(err); // Log del error
+  console.error(err); // Loguin del error
   const status = err.status || 500;
   const message = err.message || "Error interno del servidor";
   res.status(status).json({ message });

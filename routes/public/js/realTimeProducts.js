@@ -15,7 +15,7 @@ socket.on("updateProducts", (products) => {
 // Formulario para agregar un producto
 const productForm = document.getElementById("add-product-form");
 productForm.addEventListener("submit", (event) => {
-  event.preventDefault(); // Prevenir el comportamiento por defecto del formulario
+  event.preventDefault();
 
   const title = document.getElementById("title").value; // Obtener el título del formulario
   const price = document.getElementById("price").value; // Obtener el precio del formulario

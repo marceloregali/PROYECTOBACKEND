@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import mongoosePaginate from "mongoose-paginate-v2"; // Importa el plugin
+import mongoosePaginate from "mongoose-paginate-v2";
 
 const productSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -9,7 +9,7 @@ const productSchema = new mongoose.Schema({
   category: { type: String },
 });
 
-productSchema.plugin(mongoosePaginate); // Aplica el plugin al esquema
+productSchema.plugin(mongoosePaginate);
 
 const Product = mongoose.model("Product", productSchema);
 export default Product;
