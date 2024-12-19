@@ -1,28 +1,37 @@
-import mongoose from "mongoose";
-import bcrypt from "bcryptjs";
+import express from "express";
+import passport from "passport"; // Asegúrate de importar passport
+import User from "../models/User.js"; // Importa el modelo de usuario
 
-const userSchema = new mongoose.Schema({
-  first_name: { type: String, required: true },
-  last_name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  age: { type: Number, required: true },
-  password: { type: String, required: true },
-  role: { type: String, default: "user" }, //  Usuario (opcional)
+const router = express.Router();
+
+// Ruta para iniciar sesión
+router.post("/login", async (req, res, next) => {
+  const { email, password } = req.body;
+
+  try {
+    // Buscar al usuario por correo electrónico
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ message: "Usuario no encontrado" });
+    }
+
+    // Verificar la contraseña
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Contraseña incorrecta" });
+    }
+
+    // Si las credenciales son correctas, iniciar sesión
+    req.login(user, (err) => {
+      if (err) {
+        return res.status(500).json({ message: "Error al iniciar sesión" });
+      }
+      res.status(200).json({ message: "Inicio de sesión exitoso", user });
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error al autenticar al usuario" });
+  }
 });
 
-// Middleware para cifrar contraseñas antes de guardar
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
-});
-
-// Método para verificar contraseñas
-userSchema.methods.comparePassword = function (password) {
-  return bcrypt.compare(password, this.password);
-};
-
-const User = mongoose.model("User", userSchema);
-
-export default User;
+export default router;

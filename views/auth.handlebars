@@ -1,0 +1,68 @@
+<h1>Autenticación de Usuario</h1>
+
+<!-- Formulario de Registro -->
+<h2>Registrarse</h2>
+<form id="registerForm">
+  <input
+    type="text"
+    id="register_first_name"
+    placeholder="Nombre"
+    required
+  /><br />
+  <input
+    type="text"
+    id="register_last_name"
+    placeholder="Apellido"
+    required
+  /><br />
+  <input type="email" id="register_email" placeholder="Correo" required /><br />
+  <input type="number" id="register_age" placeholder="Edad" required /><br />
+  <input
+    type="password"
+    id="register_password"
+    placeholder="Contraseña"
+    required
+  /><br />
+  <button type="submit">Registrarse</button>
+</form>
+
+<!-- Formulario de Login -->
+<h2>Iniciar Sesión</h2>
+<form id="loginForm">
+  <input type="email" id="login_email" placeholder="Correo" required /><br />
+  <input
+    type="password"
+    id="login_password"
+    placeholder="Contraseña"
+    required
+  /><br />
+  <button type="submit">Iniciar Sesión</button>
+</form>
+
+<script>
+  // Registro de Usuario
+  document.getElementById("registerForm").addEventListener("submit", async (e)
+  => { e.preventDefault(); const user = { first_name:
+  document.getElementById("register_first_name").value, last_name:
+  document.getElementById("register_last_name").value, email:
+  document.getElementById("register_email").value, age:
+  document.getElementById("register_age").value, password:
+  document.getElementById("register_password").value, }; try { const response =
+  await fetch("/api/users/register", { method: "POST", headers: {
+  "Content-Type": "application/json" }, body: JSON.stringify(user), }); const
+  data = await response.json(); if (response.ok) { alert("Usuario registrado
+  correctamente"); } else { alert("Error en el registro: " + data.message); } }
+  catch (error) { console.error("Error:", error); } }); // Inicio de Sesión
+  document.getElementById("loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault(); const email =
+  document.getElementById("login_email").value; const password =
+  document.getElementById("login_password").value; try { const response = await
+  fetch("/api/users/login", { method: "POST", headers: { "Content-Type":
+  "application/json" }, body: JSON.stringify({ email, password }), }); const
+  data = await response.json(); if (response.ok) { alert("Inicio de sesión
+  exitoso"); console.log("Token recibido:", data.token);
+  localStorage.setItem("token", data.token); // Guardar token en el localStorage
+  window.location.href = "/"; // Redirigir a la página principal } else {
+  alert("Error al iniciar sesión: " + data.message); } } catch (error) {
+  console.error("Error:", error); } });
+</script>

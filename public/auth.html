@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Autenticación</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav>
+      <a href="/">Inicio</a>
+      <a href="/auth.html">Login/Registro</a>
+    </nav>
+
+    <!-- Contenido principal -->
+    <main>
+      <h1>Autenticación</h1>
+
+      <!-- Registro -->
+      <section>
+        <h2>Registrarse</h2>
+        <form id="registerForm">
+          <input
+            type="text"
+            id="register_first_name"
+            placeholder="Nombre"
+            required
+          />
+          <input
+            type="text"
+            id="register_last_name"
+            placeholder="Apellido"
+            required
+          />
+          <input
+            type="email"
+            id="register_email"
+            placeholder="Correo"
+            required
+          />
+          <input type="number" id="register_age" placeholder="Edad" required />
+          <input
+            type="password"
+            id="register_password"
+            placeholder="Contraseña"
+            required
+          />
+          <button type="submit">Registrarse</button>
+        </form>
+      </section>
+
+      <!-- Login -->
+      <section>
+        <h2>Iniciar Sesión</h2>
+        <form id="loginForm">
+          <input type="email" id="login_email" placeholder="Correo" required />
+          <input
+            type="password"
+            id="login_password"
+            placeholder="Contraseña"
+            required
+          />
+          <button type="submit">Iniciar Sesión</button>
+        </form>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <p>© 2024 Mi Sitio Web</p>
+    </footer>
+
+    <script>
+      // Funcionalidad de Registro
+      document
+        .getElementById("registerForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const user = {
+            first_name: document.getElementById("register_first_name").value,
+            last_name: document.getElementById("register_last_name").value,
+            email: document.getElementById("register_email").value,
+            age: document.getElementById("register_age").value,
+            password: document.getElementById("register_password").value,
+          };
+
+          try {
+            const response = await fetch("/api/users/register", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(user),
+            });
+
+            if (response.ok) {
+              alert("Usuario registrado correctamente");
+            } else {
+              const data = await response.json();
+              alert("Error: " + data.message);
+            }
+          } catch (error) {
+            console.error("Error:", error);
+          }
+        });
+
+      // Funcionalidad de Inicio de Sesión
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const user = {
+            email: document.getElementById("login_email").value,
+            password: document.getElementById("login_password").value,
+          };
+
+          try {
+            const response = await fetch("/api/users/login", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(user),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+              alert("Inicio de sesión exitoso");
+              localStorage.setItem("token", data.token); // Guarda el token
+              window.location.href = "/"; // Redirige al inicio
+            } else {
+              alert("Error: " + data.message);
+            }
+          } catch (error) {
+            console.error("Error:", error);
+          }
+        });
+    </script>
+  </body>
+</html>

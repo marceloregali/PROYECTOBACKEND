@@ -74,6 +74,7 @@ app.use("/", viewsRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/users", usersRouter);
+app.use("/", viewsRouter);
 
 // Ruta protegida para obtener datos del usuario logueado
 app.get(

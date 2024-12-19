@@ -1,12 +1,24 @@
-import express from "express";
-const router = express.Router();
+import { Router } from "express";
+import path from "path";
 
-router.get("/", (req, res) => {
-  res.render("index", { title: "Inicio" });
+const router = Router();
+
+// Ruta para mostrar el formulario de registro
+router.get("/register", (req, res) => {
+  res.render("register");
 });
 
-router.get("/realtimeproducts", async (req, res) => {
-  res.render("realTimeProducts", { title: "Productos en Tiempo Real" });
+// Ruta para mostrar el formulario de login
+router.get("/login", (req, res) => {
+  res.render("login");
+});
+
+router.get("/auth", (req, res) => {
+  res.render("auth");
+});
+
+router.get("/auth.html", (req, res) => {
+  res.sendFile(path.join(process.cwd(), "public", "auth.html"));
 });
 
 export default router;

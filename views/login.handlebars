@@ -1,5 +1,10 @@
-<form action="/auth/login" method="POST">
-  <input type="email" name="email" placeholder="Correo" required />
-  <input type="password" name="password" placeholder="Contraseña" required />
-  <button type="submit">Iniciar Sesión</button>
-</form>
+<div>
+  <h2>Iniciar Sesión</h2>
+  <form action="/api/sessions/login" method="POST">
+    <label>Email:</label>
+    <input type="email" name="email" required />
+    <label>Contraseña:</label>
+    <input type="password" name="password" required />
+    <button type="submit">Iniciar Sesión</button>
+  </form>
+</div>
