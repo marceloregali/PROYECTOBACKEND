@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (registerForm) {
     registerForm.addEventListener("submit", async (e) => {
-      e.preventDefault(); // Evita la recarga de página
+      e.preventDefault();
 
       const username = document.getElementById("username").value;
       const password = document.getElementById("password").value;

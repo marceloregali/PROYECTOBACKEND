@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import mongoosePaginate from "mongoose-paginate-v2";
 
-// Esquema para productos
+//  Productos
 const productSchema = new mongoose.Schema({
   name: { type: String, required: true },
   price: { type: Number, required: true },
@@ -13,7 +13,7 @@ const productSchema = new mongoose.Schema({
 // Plugin de paginación para facilitar consultas
 productSchema.plugin(mongoosePaginate);
 
-// Crear el modelo de producto
+//  Modelo de producto
 const Product = mongoose.model("Product", productSchema);
 
 export default Product;

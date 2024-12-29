@@ -2,7 +2,7 @@ import passport from "passport";
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
 import User from "../models/User.js";
 
-const SECRET_KEY = process.env.JWT_SECRET_KEY || "your_secret_key"; // Clave secreta  archivo .env
+const SECRET_KEY = process.env.JWT_SECRET_KEY || "your_secret_key"; // Archivo .env
 
 // Configuración de la estrategia JWT
 const jwtOptions = {

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { v4 as uuidv4 } from "uuid"; // Para generar un código único
+import { v4 as uuidv4 } from "uuid";
 
 const ticketSchema = new mongoose.Schema({
   code: {
@@ -13,11 +13,11 @@ const ticketSchema = new mongoose.Schema({
   },
   amount: {
     type: Number,
-    required: true, // Este campo es obligatorio
+    required: true,
   },
   purchaser: {
     type: String,
-    required: true, // Este campo es obligatorio
+    required: true,
   },
 });
 

@@ -12,7 +12,7 @@ import Handlebars from "express-handlebars";
 import dotenv from "dotenv";
 import twilio from "twilio";
 
-// Importar rutas
+// Importacion de rutas
 import productsRouter from "./routes/products.js";
 import cartsRouter from "./routes/carts.js";
 import usersRouter from "./routes/users.js";
@@ -33,7 +33,7 @@ dotenv.config();
 
 // Variables de entorno
 const SECRET_KEY = process.env.JWT_SECRET_KEY || "default_secret_key";
-const MONGO_URI = process.env.MONGO_URI; // Asegúrate de que este URI esté en tu archivo .env
+const MONGO_URI = process.env.MONGO_URI; //  Archivo .env
 const TWILIO_PHONE_NUMBER = process.env.TWILIO_WHATSAPP_NUMBER; // Número de WhatsApp de Twilio
 
 // Configuración de Twilio
@@ -52,7 +52,7 @@ mongoose
   })
   .catch((err) => {
     console.error("Error de conexión a MongoDB:", err.message);
-    process.exit(1); // Detener el servidor si no se puede conectar a MongoDB
+    process.exit(1); // si no se puede conectar a MongoDB se detiene el servidor.
   });
 
 // Configuración de Handlebars

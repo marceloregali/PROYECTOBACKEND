@@ -104,7 +104,7 @@
           }
         });
 
-      // Funcionalidad de Inicio de Sesión
+      //  Inicio de Sesión
       document
         .getElementById("loginForm")
         .addEventListener("submit", async (e) => {
@@ -126,8 +126,8 @@
 
             if (response.ok) {
               alert("Inicio de sesión exitoso");
-              localStorage.setItem("token", data.token); // Guarda el token
-              window.location.href = "/"; // Redirige al inicio
+              localStorage.setItem("token", data.token);
+              window.location.href = "/";
             } else {
               alert("Error: " + data.message);
             }
