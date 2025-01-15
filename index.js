@@ -11,24 +11,13 @@ import { dirname } from "path";
 import Handlebars from "express-handlebars";
 import dotenv from "dotenv";
 import twilio from "twilio";
-
-// Importacion de rutas
-import productsRouter from "./routes/products.js";
-import cartsRouter from "./routes/carts.js";
-import usersRouter from "./routes/users.js";
-import viewsRouter from "./routes/views.js";
-import sessionsRouter from "./routes/sessions.js";
-
-// Importar modelos, configuraciones y middlewares
-import Product from "./models/product.js";
-import { initializePassport } from "./config/passportConfig.js";
-import { authenticateToken } from "./middlewars/auth.js";
+import { authenticateToken, authorizeRole } from "./middlewars/auth.js";
 
 // Configuración de ESModules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Cargar variables de entorno
+// Carga variables de entorno
 dotenv.config();
 
 // Variables de entorno
@@ -52,7 +41,7 @@ mongoose
   })
   .catch((err) => {
     console.error("Error de conexión a MongoDB:", err.message);
-    process.exit(1); // si no se puede conectar a MongoDB se detiene el servidor.
+    process.exit(1);
   });
 
 // Configuración de Handlebars
@@ -65,7 +54,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
 app.use(helmet());
-app.use(cookieParser());
+app.use(cookieParser()); // Middleware para cookies
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "secretKey",
@@ -75,9 +64,17 @@ app.use(
 );
 
 // Inicialización de Passport
+import { initializePassport } from "./config/passportConfig.js";
 initializePassport();
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Importación de rutas
+import productsRouter from "./routes/products.js";
+import cartsRouter from "./routes/carts.js";
+import usersRouter from "./routes/users.js";
+import viewsRouter from "./routes/views.js";
+import sessionsRouter from "./routes/sessions.js";
 
 // Rutas
 app.use("/api/sessions", sessionsRouter);
@@ -98,7 +95,7 @@ app.post("/send-whatsapp", (req, res) => {
     try {
       const messageSent = await client.messages.create({
         body: message,
-        from: `whatsapp:${TWILIO_PHONE_NUMBER}`, // Tu número de WhatsApp de Twilio
+        from: `whatsapp:${TWILIO_PHONE_NUMBER}`, // Tu número de WhatsApp
         to: `whatsapp:${phoneNumber}`, // Número de destino
       });
 

@@ -1,27 +1,25 @@
-import jwt from "jsonwebtoken";
+import sessionService from "../services/session.service.js";
 
-// Middleware para verificar token JWT
+// Middleware de autenticación
 export const authenticateToken = (req, res, next) => {
-  const token = req.cookies.token;
-  if (!token) {
-    return res.status(401).json({ error: "No autorizado" });
-  }
+  const token = req.header("Authorization")?.split(" ")[1];
 
-  jwt.verify(token, process.env.JWT_SECRET_KEY, (err, user) => {
-    if (err) {
-      return res.status(403).json({ error: "Token inválido" });
-    }
-    req.user = user; // Agregar la información del usuario al request
+  if (!token) return res.status(401).json({ error: "No token provided" });
+
+  try {
+    const decoded = sessionService.verifyToken(token);
+    req.user = decoded; // Almaceno los datos decodificados del usuario
     next();
-  });
+  } catch (err) {
+    return res.status(403).json({ error: "Token is not valid" });
+  }
 };
 
-// Middleware para verificar roles
+// Middleware de autorización por rol
 export const authorizeRole = (requiredRole) => {
   return (req, res, next) => {
-    const userRole = req.user.role;
-    if (userRole !== requiredRole) {
-      return res.status(403).json({ error: "Acceso denegado" });
+    if (req.user.role !== requiredRole) {
+      return res.status(403).json({ error: "Insufficient permissions" });
     }
     next();
   };

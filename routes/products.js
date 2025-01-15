@@ -1,18 +1,17 @@
 import express from "express";
 import { authenticateToken, authorizeRole } from "../middlewars/auth.js";
-import Product from "../models/product.js";
+import ProductService from "../services/product.service.js";
 
 const router = express.Router();
 
-// Crear producto (sólo administrador)
+// Creo un  producto (sólo administrador)
 router.post(
   "/",
   authenticateToken,
-  authorizeRole("admin"), // Verifica que el usuario sea administrador
+  authorizeRole("admin"),
   async (req, res) => {
     try {
-      const product = new Product(req.body);
-      await product.save();
+      const product = await ProductService.createProduct(req.body);
       res.status(201).json(product);
     } catch (error) {
       res.status(400).json({ error: error.message });
@@ -20,37 +19,36 @@ router.post(
   }
 );
 
-// Actualizar producto (sólo administrador)
+// Actualizo el  producto (sólo administrador)
 router.put(
   "/:id",
   authenticateToken,
-  authorizeRole("admin"), // Verifica que el usuario sea administrador
+  authorizeRole("admin"),
   async (req, res) => {
     try {
-      const { id } = req.params;
-      const product = await Product.findByIdAndUpdate(id, req.body, {
-        new: true,
-      });
-      if (!product) {
+      const updatedProduct = await ProductService.updateProduct(
+        req.params.id,
+        req.body
+      );
+      if (!updatedProduct) {
         return res.status(404).json({ error: "Producto no encontrado" });
       }
-      res.json(product);
+      res.json(updatedProduct);
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
   }
 );
 
-// Eliminar producto (sólo administrador)
+// Elimino el  producto (sólo administrador)
 router.delete(
   "/:id",
   authenticateToken,
-  authorizeRole("admin"), // Verifica que el usuario sea administrador
+  authorizeRole("admin"),
   async (req, res) => {
     try {
-      const { id } = req.params;
-      const product = await Product.findByIdAndDelete(id);
-      if (!product) {
+      const deletedProduct = await ProductService.deleteProduct(req.params.id);
+      if (!deletedProduct) {
         return res.status(404).json({ error: "Producto no encontrado" });
       }
       res.json({ message: "Producto eliminado con éxito" });

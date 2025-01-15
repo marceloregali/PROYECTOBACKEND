@@ -1,63 +1,57 @@
-import jwt from "jsonwebtoken";
+import UserRepository from "../repositories/user.repository.js";
 import bcrypt from "bcryptjs";
-import User from "../models/User.js";
+import jwt from "jsonwebtoken";
+import { sendVerificationEmail } from "../services/emailService.js";
 
-const SECRET_KEY = process.env.JWT_SECRET || "default_secret_key";
-
-// Controlador para registrar un nuevo usuario
 export const register = async (req, res) => {
-  const { first_name, last_name, email, age, password } = req.body;
+  const { email, password } = req.body;
 
   try {
-    // Verificar si el correo ya está registrado
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: "El correo ya está registrado" });
-    }
+    const userExists = await UserRepository.getUserByEmail(email);
+    if (userExists)
+      return res.status(400).json({ error: "El usuario ya existe" });
 
-    // Cifrar la contraseña
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Crear un nuevo usuario
-    const newUser = new User({
-      first_name,
-      last_name,
+    const newUser = await UserRepository.createUser({
       email,
-      age,
       password: hashedPassword,
     });
 
-    const savedUser = await newUser.save();
-    res.status(201).json({ message: "Usuario registrado", user: savedUser });
+    const verificationToken = jwt.sign(
+      { id: newUser.id },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    await sendVerificationEmail(newUser.email, verificationToken);
+
+    res.status(201).json({
+      message: "Usuario registrado, revisa tu correo para verificar tu cuenta.",
+    });
   } catch (error) {
-    res.status(500).json({ message: "Error al registrar el usuario", error });
+    res.status(500).json({ error: error.message });
   }
 };
 
-// Controlador para login de usuarios
 export const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Buscar al usuario por su email
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
-    }
+    const user = await UserRepository.getUserByEmail(email);
+    if (!user) return res.status(400).json({ error: "Usuario no encontrado" });
 
-    // Verificar la contraseña
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: "Contraseña incorrecta" });
-    }
+    if (!isMatch)
+      return res.status(400).json({ error: "Contraseña incorrecta" });
 
-    // Generar un token JWT
-    const token = jwt.sign({ id: user._id, role: user.role }, SECRET_KEY, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      { id: user.id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
 
-    res.json({ message: "Login exitoso", token });
+    res.json({ token });
   } catch (error) {
-    res.status(500).json({ message: "Error durante el login", error });
+    res.status(500).json({ error: error.message });
   }
 };

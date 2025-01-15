@@ -1,9 +1,11 @@
-import { Router } from "express";
 import User from "./models/user.js";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
+import { register, login } from "../controllers/auth.controller.js";
 
-const router = Router();
+const router = express.Router();
+
+router.post("/register", register);
+router.post("/login", login);
 
 // Registro de usuario
 router.post("/register", async (req, res) => {

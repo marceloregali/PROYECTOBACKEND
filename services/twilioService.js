@@ -11,7 +11,7 @@ export const sendWhatsAppMessage = async (to, message) => {
     const messageSent = await client.messages.create({
       body: message,
       from: process.env.TWILIO_WHATSAPP_NUMBER, // Número de WhatsApp de Twilio
-      to: `whatsapp:${to}`, // Número destino en formato internacional
+      to: `whatsapp:${to}`,
     });
     console.log("Mensaje de WhatsApp enviado:", messageSent.sid);
   } catch (error) {

@@ -5,7 +5,7 @@ const ticketSchema = new mongoose.Schema({
   code: {
     type: String,
     unique: true,
-    default: () => uuidv4(), // Generar un código único automáticamente
+    default: () => uuidv4(),
   },
   purchase_datetime: {
     type: Date,
@@ -17,6 +17,12 @@ const ticketSchema = new mongoose.Schema({
   },
   purchaser: {
     type: String,
+    required: true,
+  },
+  // Referencia al carrito de compra
+  cart: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Cart",
     required: true,
   },
 });

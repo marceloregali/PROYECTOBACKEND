@@ -18,7 +18,12 @@ const cartSchema = new mongoose.Schema({
 });
 
 // Agrego un producto al carrito
-cartSchema.methods.addProduct = function (productId, quantity) {
+cartSchema.methods.addProduct = async function (productId, quantity) {
+  const product = await mongoose.model("Product").findById(productId);
+  if (!product) {
+    throw new Error("Producto no encontrado");
+  }
+
   const existingProductIndex = this.productos.findIndex(
     (p) => p.product.toString() === productId
   );
