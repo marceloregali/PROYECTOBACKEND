@@ -12,6 +12,7 @@ import Handlebars from "express-handlebars";
 import dotenv from "dotenv";
 import twilio from "twilio";
 import { authenticateToken, authorizeRole } from "./middlewars/auth.js";
+import mocksRouter from "./routes/mocks.router.js";
 
 // Configuración de ESModules
 const __filename = fileURLToPath(import.meta.url);
@@ -82,6 +83,7 @@ app.use("/", viewsRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/users", usersRouter);
+app.use("/api/mocks", mocksRouter);
 
 // Ruta para enviar mensaje de WhatsApp de manera asincrónica
 app.post("/send-whatsapp", (req, res) => {

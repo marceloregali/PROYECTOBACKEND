@@ -62,6 +62,6 @@ userSchema.methods.resetPassword = async function (newPassword) {
   await this.save();
 };
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.models.User || mongoose.model("User", userSchema);
 
 export default User;
