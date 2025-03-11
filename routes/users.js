@@ -1,7 +1,7 @@
 import { Router } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import User from "../models/User.js"; // Ahora importamos el modelo de usuario
+import User from "../models/user.js"; // Ahora importamos el modelo de usuario
 import twilio from "twilio"; // Importamos Twilio
 
 const router = Router();

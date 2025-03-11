@@ -3,39 +3,27 @@ import bcrypt from "bcryptjs";
 
 // Esquema de usuario
 const userSchema = new mongoose.Schema({
-  first_name: {
-    type: String,
-    required: true,
-  },
-  last_name: {
-    type: String,
-    required: true,
-  },
+  first_name: { type: String, required: true },
+  last_name: { type: String, required: true },
   email: {
     type: String,
     required: true,
     unique: true,
     lowercase: true,
-    match: [/\S+@\S+\.\S+/, "Por favor ingrese un correo electrónico válido"], // Validación de formato de correo
+    match: [/\S+@\S+\.\S+/, "Correo inválido"],
   },
-  age: {
-    type: Number,
-    required: true,
-    min: [18, "La edad debe ser al menos 18 años"], // Validación de edad
-  },
-  password: {
-    type: String,
-    required: true,
-    minlength: [6, "La contraseña debe tener al menos 6 caracteres"], // Validación de longitud mínima de la contraseña
-  },
+  age: { type: Number, required: true, min: [18, "Debe ser mayor de 18"] },
+  password: { type: String, required: true, minlength: 6 },
   phoneNumber: {
     type: String,
     required: true,
-    match: [/^\+?\d{10,15}$/, "Por favor ingrese un número de teléfono válido"], // Validación de formato de número telefónico
+    match: [/^\+?\d{10,15}$/, "Número de teléfono inválido"],
   },
+  role: { type: String, enum: ["user", "admin"], default: "user" },
+  pets: [{ type: mongoose.Schema.Types.ObjectId, ref: "Pet" }],
 });
 
-// Encriptar la contraseña antes de guardar el usuario
+// Encriptar la contraseña antes de guardar
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   const salt = await bcrypt.genSalt(10);
@@ -43,9 +31,9 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-// Método para comparar la contraseña al iniciar sesión
+// Método para comparar contraseña
 userSchema.methods.comparePassword = async function (password) {
-  return await bcrypt.compare(password, this.password);
+  return bcrypt.compare(password, this.password);
 };
 
 // Método para actualizar el perfil del usuario

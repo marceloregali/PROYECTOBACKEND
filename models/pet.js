@@ -2,11 +2,13 @@ import mongoose from "mongoose";
 
 const petSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  species: { type: String, required: true },
-  age: { type: Number, required: true },
-  owner: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: false },
+  age: { type: Number, required: true, min: 0 },
+  type: {
+    type: String,
+    enum: ["dog", "cat", "rabbit", "parrot", "hamster"],
+    required: true,
+  },
 });
 
-const Pet = mongoose.model("Pet", petSchema);
-
-export default Pet;
+const PetModel = mongoose.model("Pet", petSchema);
+export default PetModel;

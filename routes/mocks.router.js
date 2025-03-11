@@ -3,47 +3,57 @@ import bcrypt from "bcrypt";
 import { faker } from "@faker-js/faker";
 import UserModel from "../models/user.js";
 import PetModel from "../models/pet.js";
+import mongoose from "mongoose";
 
 const router = Router();
 
-// Función para generar un usuario mock
+// Función para generar usuarios mock con ID de MongoDB
 const generateMockUser = () => {
   return {
+    _id: new mongoose.Types.ObjectId(),
     first_name: faker.person.firstName(),
     last_name: faker.person.lastName(),
     email: faker.internet.email(),
-    password: bcrypt.hashSync("coder123", 10), // Contraseña encriptada
+    password: bcrypt.hashSync("coder123", 10),
     role: Math.random() > 0.5 ? "user" : "admin",
     pets: [],
   };
 };
 
-// Endpoint GET /mockingusers (Genera 50 usuarios mock)
-router.get("/mockingusers", async (req, res) => {
-  const mockUsers = Array.from({ length: 50 }, generateMockUser);
-  res.json(mockUsers);
+// Función para generar mascotas mock
+const petTypes = ["dog", "cat", "rabbit", "parrot", "hamster"];
+const generateMockPet = () => ({
+  name: faker.animal.dog(),
+  age: faker.number.int({ min: 1, max: 15 }),
+  type: faker.helpers.arrayElement(petTypes),
 });
 
-// Endpoint POST /generateData (Genera e inserta usuarios y mascotas en la DB)
+// Endpoint GET para obtener usuarios mock (50 por defecto)
+router.get("/mockingusers", async (req, res) => {
+  const mockUsers = Array.from({ length: 50 }, generateMockUser);
+  res.json({ users: mockUsers, count: mockUsers.length });
+});
+
+// Endpoint POST para generar usuarios y mascotas en la base de datos
 router.post("/generateData", async (req, res) => {
   const { users = 0, pets = 0 } = req.body;
 
   try {
-    // Generar usuarios
     const mockUsers = Array.from({ length: users }, generateMockUser);
-    await UserModel.insertMany(mockUsers);
+    const createdUsers = await UserModel.insertMany(mockUsers);
 
-    // Generar mascotas
-    const mockPets = Array.from({ length: pets }, () => ({
-      name: faker.animal.dog(),
-      age: faker.number.int({ min: 1, max: 15 }),
-      type: "dog",
-    }));
-    await PetModel.insertMany(mockPets);
+    const mockPets = Array.from({ length: pets }, generateMockPet);
+    const createdPets = await PetModel.insertMany(mockPets);
 
-    res.json({ message: "Datos generados correctamente" });
+    res.json({
+      message: "Datos generados correctamente",
+      users: createdUsers,
+      pets: createdPets,
+    });
   } catch (error) {
-    res.status(500).json({ error: "Error al generar datos" });
+    res
+      .status(500)
+      .json({ error: "Error al generar datos", details: error.message });
   }
 });
 
