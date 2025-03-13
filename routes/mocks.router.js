@@ -1,13 +1,13 @@
 import { Router } from "express";
 import bcrypt from "bcrypt";
 import { faker } from "@faker-js/faker";
-import UserModel from "../models/user.js";
+import UserModel from "../models/User.js";
 import PetModel from "../models/pet.js";
 import mongoose from "mongoose";
 
 const router = Router();
 
-// Función para generar usuarios mock con ID de MongoDB
+//  generar usuarios mock con ID de MongoDB
 const generateMockUser = () => {
   return {
     _id: new mongoose.Types.ObjectId(),
@@ -20,7 +20,7 @@ const generateMockUser = () => {
   };
 };
 
-// Función para generar mascotas mock
+//  generar mascotas mock
 const petTypes = ["dog", "cat", "rabbit", "parrot", "hamster"];
 const generateMockPet = () => ({
   name: faker.animal.dog(),

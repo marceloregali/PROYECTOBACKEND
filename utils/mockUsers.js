@@ -1,13 +1,12 @@
 import { faker } from "@faker-js/faker";
 import bcrypt from "bcryptjs";
-import User from "./models/User.js"; // Asegúrate de que la ruta sea correcta
 
-// Función para generar usuarios falsos
+//  generar usuarios falsos
 export const generateMockUsers = async (numUsers = 10) => {
   const users = [];
 
   for (let i = 0; i < numUsers; i++) {
-    const password = "123456"; // Contraseña genérica para pruebas
+    const password = "123456";
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 

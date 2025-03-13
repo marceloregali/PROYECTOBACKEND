@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
-// Esquema de usuario
+// usuario
 const userSchema = new mongoose.Schema({
   first_name: { type: String, required: true },
   last_name: { type: String, required: true },
@@ -31,19 +31,19 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-// Método para comparar contraseña
+//  comparar contraseña
 userSchema.methods.comparePassword = async function (password) {
   return bcrypt.compare(password, this.password);
 };
 
-// Método para actualizar el perfil del usuario
+// Actualizar el perfil del usuario
 userSchema.methods.updateProfile = async function (updateData) {
   // Este método actualizaría los datos del perfil del usuario
   Object.assign(this, updateData);
   await this.save();
 };
 
-// Método para restablecer la contraseña
+//  restablecer la contraseña
 userSchema.methods.resetPassword = async function (newPassword) {
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(newPassword, salt);
